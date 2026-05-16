@@ -1,0 +1,10 @@
+V4 safety polish fix
+
+Included fixes:
+- End Week confirm is locked/debounced so double tapping cannot skip two weeks.
+- Confirm & Close Week closes the preview immediately and opens the next week on Monday.
+- Removed the long explanatory text from End Week preview to reduce visual clutter.
+- Remaining Off / Remaining Holiday now affect only empty remaining days; entered work days are preserved.
+- End Week now carries the last known km into Monday of the next week.
+- Off/Holiday can no longer be applied to a day that already has entered work data; clear the day first.
+- Off/Holiday days carry start km to finish km so km chain does not break.

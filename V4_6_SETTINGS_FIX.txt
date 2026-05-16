@@ -1,0 +1,8 @@
+Driver Pay App v4.6 - Settings fix
+
+- Fixed Settings modal crash caused by missing SettingsInput component.
+- Settings screen should now open instead of showing the safe-fallback error.
+- Added safer suggested-start selection:
+  - 11h start remains the primary suggestion when valid.
+  - 9h start is used when 11h is unavailable and 9h is valid.
+- Removed package-lock.json from the package to avoid Vercel npm install hanging.

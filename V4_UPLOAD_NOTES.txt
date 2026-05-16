@@ -1,0 +1,18 @@
+Driver Pay App V4 clean upload package.
+
+Upload these items to GitHub root:
+- src folder
+- public folder
+- .npmrc
+- index.html
+- package.json
+- tsconfig.json
+- vite.config.ts
+
+Do NOT paste .npmrc content into tsconfig.json.
+Do NOT paste App.tsx content into index.html.
+Do NOT upload node_modules or dist.
+Vercel settings:
+- Install Command: npm install
+- Build Command: npm run build
+- Output Directory: dist

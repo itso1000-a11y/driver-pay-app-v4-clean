@@ -1,0 +1,14 @@
+Driver Pay App V4 - Small UX / Settings Fix
+
+Changes:
+- Week calendar no longer stays permanently on the main screen.
+- Week ending field is now a single clean tap target.
+- Tapping the field opens the week picker modal.
+- Selecting a Saturday loads that week and closes the picker automatically.
+- No separate icon and no permanent calendar block on the day screen.
+- Settings modal is now protected with safe settings defaults and an error boundary.
+- Corrupt/non-array archive data is sanitized on load.
+- Removed duplicate previousWeekFinishKm declaration.
+- package-lock.json removed from this export to avoid Vercel npm install hang.
+
+Build test: npm run build passed.

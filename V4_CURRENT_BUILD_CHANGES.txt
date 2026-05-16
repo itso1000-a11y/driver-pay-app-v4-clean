@@ -1,0 +1,30 @@
+Driver Pay App V4 - current build changes
+
+Included fixes/features:
+1. Day summary: Overtime now shows '-' when overtime is zero or no worked hours are entered.
+2. PWA install button: Install button only appears when Chrome provides a real install prompt. No fallback alert.
+3. Custom bonuses in Settings:
+   - Six empty custom bonus slots.
+   - Each slot has name + rate.
+   - Empty custom bonuses are hidden from Add bonus list.
+   - Named custom bonuses appear in Add bonus list.
+   - Custom bonus rate is used in pay calculation.
+4. Existing standard bonuses remain available:
+   - ADR
+   - Genset
+   - Splitter
+   - Driver Assist
+   - London Bonus
+5. Existing V4 fixes retained:
+   - EN/BG language support.
+   - PWA files.
+   - KM carry-forward for Off/Holiday.
+   - Long shift >13h start suggestion fix.
+   - Archive/Backup base logic.
+   - Clean Vercel setup with .npmrc.
+
+Upload rules:
+- Upload src, public, index.html, package.json, tsconfig.json, vite.config.ts, .npmrc.
+- Do not upload node_modules.
+- Do not upload dist.
+- Do not upload package-lock.json unless intentionally regenerated.

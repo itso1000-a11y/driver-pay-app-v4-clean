@@ -1,0 +1,8 @@
+V4 floating suggestions / weekend Off fix
+
+- Start time suggestion remains a placeholder/draft and should not block switching back to Off/Holiday.
+- Switching Work -> Off/Holiday now clears draft shift data safely.
+- Real worked data still triggers confirmation before clearing.
+- Carried-forward start/finish km with no actual km run no longer blocks Off/Holiday.
+- Finish KM input is hidden for Off/Holiday days; it is only shown for Work days.
+- Off/Holiday still preserves carry-forward km internally for week continuity.
