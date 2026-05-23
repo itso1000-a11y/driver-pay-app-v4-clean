@@ -1,0 +1,8 @@
+Driver Pay App v4.17
+
+Changes only:
+- Day Type buttons are now displayed on one row.
+- Worked field uses violation styling when duty/worked time exceeds 15h.
+- Long shift wording changed to 15h limit exceeded / 15ч лимит надвишен.
+
+No daily workflow, rest suggestion, KM, bonus, archive, pay calculation, or state logic changes were made.
