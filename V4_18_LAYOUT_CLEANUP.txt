@@ -1,0 +1,10 @@
+Driver Pay App v4.18 layout cleanup
+
+Changes:
+- Day Type buttons shown in one horizontal row with icons.
+- Rest from previous day moved directly below Shift/helper and above Kilometres.
+- Rest block visual height slightly reduced only by padding.
+- Removed duplicated Start KM helper paragraph below the field.
+- Worked field uses violation styling when worked time exceeds 15h.
+
+No logic changes to calculations, rest rules, suggested start behaviour, bonuses, archive, workflow, or pay logic.
