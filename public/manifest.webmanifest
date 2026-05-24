@@ -1,7 +1,7 @@
 {
-  "name": "Driver Pay App v4.22",
-  "short_name": "Driver Pay v4.22",
-  "description": "Driver pay calculator for UK drivers - v4.22 UI density and current-day priority update",
+  "name": "Driver Pay App v4.21",
+  "short_name": "Driver Pay v4.21",
+  "description": "Driver pay calculator for UK drivers - v4.21 compact header update",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
