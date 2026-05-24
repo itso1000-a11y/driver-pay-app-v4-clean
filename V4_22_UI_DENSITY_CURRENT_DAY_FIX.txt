@@ -1,0 +1,20 @@
+Driver Pay App v4.22 - UI Density + Current-Day Priority Fix
+
+Scope:
+- Controlled UI density polish only: smaller vertical padding, slightly lower Week/Prev/Next/day type/rest/stat sizing.
+- Smart current-day opening behavior for active/current week.
+
+Current-day priority rule:
+- If the active/current week contains today and today is marked Holiday/Off, the app opens today instead of skipping ahead to the first unresolved future day.
+- If today is an incomplete Work day, the app also opens today.
+- Closed/archive weeks still use existing protected archive behavior.
+
+Not changed:
+- Pay calculations.
+- Rest calculations.
+- Archive edit logic.
+- Colors/palettes.
+- Day workflow order.
+- Bonus/KM calculation logic.
+
+Version metadata updated to v4.22.
