@@ -1,7 +1,7 @@
 {
-  "name": "Driver Pay App v4.20",
-  "short_name": "Driver Pay v4.20",
-  "description": "Driver pay calculator for UK drivers - v4.20 compact header update",
+  "name": "Driver Pay App v4.21",
+  "short_name": "Driver Pay v4.21",
+  "description": "Driver pay calculator for UK drivers - v4.21 compact header update",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

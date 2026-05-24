@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.20";
+const APP_VERSION = "v4.21";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -208,9 +208,20 @@ function getCurrentPayrollSaturdayISO(): string {
 }
 
 function getStartupPayrollSaturdayISO(): string {
-  if (typeof window === "undefined") return getCurrentPayrollSaturdayISO();
+  const currentSaturday = getCurrentPayrollSaturdayISO();
+  if (typeof window === "undefined") return currentSaturday;
   const saved = localStorage.getItem(ACTIVE_WEEK_STORAGE_KEY);
-  return /^\d{4}-\d{2}-\d{2}$/.test(saved || "") ? (saved as string) : getCurrentPayrollSaturdayISO();
+  const savedLooksValid = /^\d{4}-\d{2}-\d{2}$/.test(saved || "");
+
+  // Startup must never drop a fresh install/tester into an old archive week.
+  // Reuse the saved active week only when it is current/future and not closed.
+  // Old closed/historical pointers are treated as stale PWA/localStorage state.
+  if (savedLooksValid && (saved as string) >= currentSaturday && !isWeekClosed(saved as string)) return saved as string;
+
+  if (savedLooksValid && saved !== currentSaturday) {
+    localStorage.setItem(ACTIVE_WEEK_STORAGE_KEY, currentSaturday);
+  }
+  return currentSaturday;
 }
 
 function readClosedWeeks(): string[] {
@@ -880,15 +891,8 @@ export default function App() {
     if (typeof window === "undefined") return initialDays;
     const startupSaturday = getStartupPayrollSaturdayISO();
     const weekData = loadSavedWeekDataOrBlank(startupSaturday);
-    if (localStorage.getItem(getWeekStorageKey(startupSaturday)) || localStorage.getItem(ACTIVE_WEEK_STORAGE_KEY)) return weekData.days;
-    try {
-      const saved = localStorage.getItem("days") || localStorage.getItem("driverApp_days");
-      if (!saved) return initialDays;
-      const parsed = JSON.parse(saved);
-      return Array.isArray(parsed) ? initialDays.map((day, index) => sanitizeDayRecord(parsed[index], day)) : initialDays;
-    } catch {
-      return initialDays;
-    }
+    localStorage.setItem(ACTIVE_WEEK_STORAGE_KEY, startupSaturday);
+    return weekData.days;
   });
   const [settings, setSettings] = useState<SettingsState>(() => {
     if (typeof window === "undefined") return initialSettings;
@@ -1004,8 +1008,7 @@ export default function App() {
   function loadWeekBySaturday(saturdayISO: string, shouldClosePicker = false) { saveWeekData(days, settings, payslipActualWeek); const loaded = loadSavedWeekDataOrBlank(saturdayISO); setSelectedSaturday(saturdayISO); setDays(loaded.days); setSettings(sanitizeSettings(loaded.settings)); setPayslipActualWeek(loaded.payslipActualWeek || ""); setHistoricalEditEnabled(false); setCurrentIndex(getFirstIncompleteIndex(loaded.days)); if (shouldClosePicker) setShowWeekPicker(false); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function loadSelectedWeek() { loadWeekBySaturday(selectedSaturday); }
   function loadCurrentWeek() {
-    const savedActive = typeof window !== "undefined" ? localStorage.getItem(ACTIVE_WEEK_STORAGE_KEY) : null;
-    const activeSaturday = /^\d{4}-\d{2}-\d{2}$/.test(savedActive || "") ? (savedActive as string) : getCurrentPayrollSaturdayISO();
+    const activeSaturday = getStartupPayrollSaturdayISO();
     loadWeekBySaturday(activeSaturday, true);
   }
   function setCurrentDayType(type: DayType) {
