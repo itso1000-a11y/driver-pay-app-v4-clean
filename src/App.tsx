@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.25";
+const APP_VERSION = "v4.26";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -1184,7 +1184,8 @@ function SectionHeading({ title, right }: { title: string; right?: string }) { r
 function Field({ label, children }: { label: string; children: React.ReactNode }) { return <label style={{ display: "grid", gap: 6 }}><div style={{ fontSize: 13, fontWeight: 800, color: "#334155" }}>{label}</div>{children}</label>; }
 function TimeRow({ label, value, onChange, onBlur, placeholder = "00:00" }: { label: string; value: string; onChange: (value: string) => void; onBlur: () => void; placeholder?: string }) { return <Field label={label}><input style={{ ...inputStyle, height: 58, fontSize: 24, fontWeight: 900, textAlign: "center", letterSpacing: 1, paddingLeft: 8, paddingRight: 8 }} inputMode="numeric" value={value} onChange={(e) => onChange(e.target.value)} onBlur={onBlur} placeholder={placeholder} /></Field>; }
 function HelperLine({ text }: { text: string }) { return <div style={{ marginTop: 10, fontSize: 14, fontWeight: 900, color: text.includes("unavailable") || text.includes("недостъпна") || text.includes("limit") ? "#b45309" : "#166534", display: "flex", alignItems: "center", gap: 6, lineHeight: 1.25 }}><span style={{ fontSize: 16 }}>!</span><span>{text}</span></div>; }
-function MiniStat({ label, value }: { label: string; value: React.ReactNode }) { return <div style={{ padding: 12, borderRadius: 14, border: "1px solid #eef2f7", background: "#f8fafc" }}><div style={{ fontSize: 12, color: "#64748b", fontWeight: 700 }}>{label}</div><div style={{ fontSize: 17, fontWeight: 900, marginTop: 3 }}>{value}</div></div>; }
+type MiniStatTone = "danger";
+function MiniStat({ label, value, tone }: { label: string; value: React.ReactNode; tone?: MiniStatTone }) { const isDanger = tone === "danger"; return <div style={{ padding: 12, borderRadius: 14, border: isDanger ? "1px solid #ef4444" : "1px solid #eef2f7", background: isDanger ? "#fee2e2" : "#f8fafc", color: isDanger ? "#991b1b" : undefined }}><div style={{ fontSize: 12, color: isDanger ? "#991b1b" : "#64748b", fontWeight: 700 }}>{label}</div><div style={{ fontSize: 17, fontWeight: 900, marginTop: 3 }}>{value}</div></div>; }
 function RestCard({ value, colors }: { value: string; colors: { bg: string; border: string; text: string; label: string } }) { return <div style={{ padding: 12, borderRadius: 14, border: `1px solid ${colors.border}`, background: "rgba(255,255,255,0.65)", color: colors.text }}><div style={{ fontSize: 12, fontWeight: 800 }}>{colors.label}</div><div style={{ fontSize: 24, fontWeight: 900, marginTop: 4 }}>{value}</div></div>; }
 
 type ToggleVariant = "danger" | "warning" | "success";
