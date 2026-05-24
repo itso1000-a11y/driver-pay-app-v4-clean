@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.21";
+const APP_VERSION = "v4.22";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -132,10 +132,10 @@ const initialSettings: SettingsState = {
 };
 
 const pageStyle: React.CSSProperties = { minHeight: "100vh", background: "#f5f7fb", padding: 12, fontFamily: "Arial, sans-serif", color: "#0f172a" };
-const shellStyle: React.CSSProperties = { maxWidth: 430, margin: "0 auto", background: "#ffffff", borderRadius: 22, border: "1px solid #e5e7eb", overflow: "hidden" };
-const sectionStyle: React.CSSProperties = { padding: 14, borderTop: "1px solid #eef2f7" };
-const inputStyle: React.CSSProperties = { width: "100%", padding: "10px 12px", borderRadius: 14, border: "1px solid #dbe3ee", fontSize: 16, outline: "none", boxSizing: "border-box", background: "#fff" };
-const buttonStyle: React.CSSProperties = { borderRadius: 14, border: "1px solid #dbe3ee", padding: "10px 12px", fontSize: 15, fontWeight: 700, cursor: "pointer", background: "#fff", transition: "transform 0.08s ease, filter 0.08s ease, background 0.08s ease, opacity 0.08s ease, box-shadow 0.08s ease", WebkitTapHighlightColor: "transparent", userSelect: "none" };
+const shellStyle: React.CSSProperties = { maxWidth: 430, margin: "0 auto", background: "#ffffff", borderRadius: 24, border: "1px solid #e5e7eb", overflow: "hidden" };
+const sectionStyle: React.CSSProperties = { padding: 16, borderTop: "1px solid #eef2f7" };
+const inputStyle: React.CSSProperties = { width: "100%", padding: "12px 14px", borderRadius: 14, border: "1px solid #dbe3ee", fontSize: 16, outline: "none", boxSizing: "border-box", background: "#fff" };
+const buttonStyle: React.CSSProperties = { borderRadius: 14, border: "1px solid #dbe3ee", padding: "12px 14px", fontSize: 15, fontWeight: 700, cursor: "pointer", background: "#fff", transition: "transform 0.08s ease, filter 0.08s ease, background 0.08s ease, opacity 0.08s ease, box-shadow 0.08s ease", WebkitTapHighlightColor: "transparent", userSelect: "none" };
 
 function addDays(date: Date, days: number): Date {
   const d = new Date(date);
@@ -566,6 +566,25 @@ function getFirstIncompleteIndex(days: DayRecord[]): number {
   return monday >= 0 ? monday : (ordered[0] ?? 0);
 }
 
+function getPreferredOpenDayIndex(days: DayRecord[]): number {
+  const todayISO = toISODate(new Date());
+  const currentSaturday = getCurrentPayrollSaturdayISO();
+  const weekSaturday = getSaturdayDay(days).dateISO;
+  const todayIndex = days.findIndex((day) => day.dateISO === todayISO);
+
+  // Smart current-day priority: if the active/current week contains today,
+  // open today when it is still practically changeable. This prevents planned
+  // Holiday/Off days from pushing the driver past today when plans change.
+  if (weekSaturday === currentSaturday && todayIndex >= 0 && !isWeekClosed(weekSaturday)) {
+    const today = days[todayIndex];
+    const isNonWorkingPlan = today.dayType === "holiday" || today.dayType === "off";
+    const isIncompleteWorkDay = today.dayType === "work" && !isDayComplete(today);
+    if (isNonWorkingPlan || isIncompleteWorkDay) return todayIndex;
+  }
+
+  return getFirstIncompleteIndex(days);
+}
+
 function getAdjacentLogicalIndex(days: DayRecord[], currentIndex: number, direction: 1 | -1): number {
   const ordered = getOrderedDayIndices(days);
   const currentPos = ordered.indexOf(currentIndex);
@@ -775,7 +794,7 @@ function restoreDriverBackupFile(file: File, callbacks: {
       callbacks.setArchive(restoredArchive);
       callbacks.setSelectedSaturday(activeSaturday);
       callbacks.setHistoricalEditEnabled(false);
-      callbacks.setCurrentIndex(getFirstIncompleteIndex(restoredDays));
+      callbacks.setCurrentIndex(getPreferredOpenDayIndex(restoredDays));
       callbacks.onDone?.();
       window.alert(t("backupRestored"));
     } catch {
@@ -988,7 +1007,7 @@ export default function App() {
       document.removeEventListener("keydown", handleEnterNavigation, true);
     };
   }, [currentIndex, currentDay.dayType, currentDay.bonuses.length, showBonusForm, showWeekView, showSettings, showWeekPicker]);
-  useEffect(() => { if (!didAutoSelectRef.current) { setCurrentIndex(getFirstIncompleteIndex(days)); didAutoSelectRef.current = true; } }, [days]);
+  useEffect(() => { if (!didAutoSelectRef.current) { setCurrentIndex(getPreferredOpenDayIndex(days)); didAutoSelectRef.current = true; } }, [days]);
   useEffect(() => { setSelectedSaturday(getSaturdayDay(days).dateISO); }, [days]);
   useEffect(() => { const active = getActiveBonusTypes(settings); if (!active.includes(draftBonusType)) setDraftBonusType(active[0] || "ADR"); }, [settings, draftBonusType]);
 
@@ -1005,7 +1024,7 @@ export default function App() {
   function updateBonusQty(id: string, rawValue: string) { const qty = Math.max(1, Number(digitsOnly(rawValue) || "1") || 1); updateCurrentDay("bonuses", currentDay.bonuses.map((bonus) => bonus.id === id ? { ...bonus, qty } : bonus)); }
   function addBonus() { const qty = Math.max(1, Number(draftBonusQty || "1") || 1); const existing = currentDay.bonuses.find((bonus) => bonus.type === draftBonusType); if (existing) { updateCurrentDay("bonuses", currentDay.bonuses.map((bonus) => bonus.id === existing.id ? { ...bonus, qty: bonus.qty + qty } : bonus)); } else { updateCurrentDay("bonuses", [...currentDay.bonuses, { id: `${Date.now()}-${Math.random()}`, type: draftBonusType, qty }]); } setDraftBonusQty("1"); setShowBonusForm(false); }
   function navigateLogical(direction: 1 | -1) { setCurrentIndex((prev) => getAdjacentLogicalIndex(days, prev, direction)); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function loadWeekBySaturday(saturdayISO: string, shouldClosePicker = false) { saveWeekData(days, settings, payslipActualWeek); const loaded = loadSavedWeekDataOrBlank(saturdayISO); setSelectedSaturday(saturdayISO); setDays(loaded.days); setSettings(sanitizeSettings(loaded.settings)); setPayslipActualWeek(loaded.payslipActualWeek || ""); setHistoricalEditEnabled(false); setCurrentIndex(getFirstIncompleteIndex(loaded.days)); if (shouldClosePicker) setShowWeekPicker(false); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function loadWeekBySaturday(saturdayISO: string, shouldClosePicker = false) { saveWeekData(days, settings, payslipActualWeek); const loaded = loadSavedWeekDataOrBlank(saturdayISO); setSelectedSaturday(saturdayISO); setDays(loaded.days); setSettings(sanitizeSettings(loaded.settings)); setPayslipActualWeek(loaded.payslipActualWeek || ""); setHistoricalEditEnabled(false); setCurrentIndex(getPreferredOpenDayIndex(loaded.days)); if (shouldClosePicker) setShowWeekPicker(false); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function loadSelectedWeek() { loadWeekBySaturday(selectedSaturday); }
   function loadCurrentWeek() {
     const activeSaturday = getStartupPayrollSaturdayISO();
@@ -1163,7 +1182,7 @@ function MiniStat({ label, value }: { label: string; value: React.ReactNode }) {
 function RestCard({ value, colors }: { value: string; colors: { bg: string; border: string; text: string; label: string } }) { return <div style={{ padding: 12, borderRadius: 14, border: `1px solid ${colors.border}`, background: "rgba(255,255,255,0.65)", color: colors.text }}><div style={{ fontSize: 12, fontWeight: 800 }}>{colors.label}</div><div style={{ fontSize: 24, fontWeight: 900, marginTop: 4 }}>{value}</div></div>; }
 
 type ToggleVariant = "danger" | "warning" | "success";
-function ToggleRow({ label, value, onChange, right, variant }: { label: string; value: boolean; onChange: (checked: boolean) => void; right?: string; variant: ToggleVariant }) { const palettes: Record<ToggleVariant, { bg: string; border: string; text: string; shadow: string }> = { danger: { bg: "linear-gradient(135deg,#ffffff 0%,#fee2e2 100%)", border: "#ef4444", text: "#991b1b", shadow: "inset 0 3px 8px rgba(153,27,27,0.22)" }, warning: { bg: "linear-gradient(135deg,#ffffff 0%,#fed7aa 100%)", border: "#f97316", text: "#9a3412", shadow: "inset 0 3px 8px rgba(154,52,18,0.20)" }, success: { bg: "linear-gradient(135deg,#ffffff 0%,#dcfce7 100%)", border: "#22c55e", text: "#166534", shadow: "inset 0 3px 8px rgba(22,101,52,0.20)" } }; const p = palettes[variant]; const style: React.CSSProperties = value ? { ...buttonStyle, width: "100%", textAlign: "left", background: p.bg, border: `2px solid ${p.border}`, color: p.text, boxShadow: p.shadow, transform: "translateY(2px)", padding: "11px 12px" } : { ...buttonStyle, width: "100%", textAlign: "left", background: "#f8fafc", border: "1px solid #cbd5e1", color: "#475569", boxShadow: "0 2px 0 #cbd5e1", padding: "11px 12px" }; return <button type="button" style={style} onClick={() => onChange(!value)}><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><div><div style={{ fontSize: 15, fontWeight: 900 }}>{label}</div>{right && <div style={{ marginTop: 3, fontSize: 11, fontWeight: 800, opacity: 0.8 }}>{right}</div>}</div><div style={{ fontSize: 16, fontWeight: 950, letterSpacing: 0.6 }}>{value ? "✓" : ""}</div></div></button>; }
+function ToggleRow({ label, value, onChange, right, variant }: { label: string; value: boolean; onChange: (checked: boolean) => void; right?: string; variant: ToggleVariant }) { const palettes: Record<ToggleVariant, { bg: string; border: string; text: string; shadow: string }> = { danger: { bg: "linear-gradient(135deg,#ffffff 0%,#fee2e2 100%)", border: "#ef4444", text: "#991b1b", shadow: "inset 0 3px 8px rgba(153,27,27,0.22)" }, warning: { bg: "linear-gradient(135deg,#ffffff 0%,#fed7aa 100%)", border: "#f97316", text: "#9a3412", shadow: "inset 0 3px 8px rgba(154,52,18,0.20)" }, success: { bg: "linear-gradient(135deg,#ffffff 0%,#dcfce7 100%)", border: "#22c55e", text: "#166534", shadow: "inset 0 3px 8px rgba(22,101,52,0.20)" } }; const p = palettes[variant]; const style: React.CSSProperties = value ? { ...buttonStyle, width: "100%", textAlign: "left", background: p.bg, border: `2px solid ${p.border}`, color: p.text, boxShadow: p.shadow, transform: "translateY(2px)", padding: "13px 14px" } : { ...buttonStyle, width: "100%", textAlign: "left", background: "#f8fafc", border: "1px solid #cbd5e1", color: "#475569", boxShadow: "0 2px 0 #cbd5e1", padding: "13px 14px" }; return <button type="button" style={style} onClick={() => onChange(!value)}><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><div><div style={{ fontSize: 15, fontWeight: 900 }}>{label}</div>{right && <div style={{ marginTop: 3, fontSize: 11, fontWeight: 800, opacity: 0.8 }}>{right}</div>}</div><div style={{ fontSize: 16, fontWeight: 950, letterSpacing: 0.6 }}>{value ? "✓" : ""}</div></div></button>; }
 
 type DayButtonVariant = "work" | "holiday" | "off";
 function DayTypeButton({ label, active, onClick, variant }: { label: string; active: boolean; onClick: () => void; variant: DayButtonVariant }) { const palettes: Record<DayButtonVariant, { bg: string; border: string; text: string }> = { work: { bg: "linear-gradient(135deg,#ffffff 0%,#dcfce7 100%)", border: "#22c55e", text: "#166534" }, holiday: { bg: "linear-gradient(135deg,#ffffff 0%,#fed7aa 100%)", border: "#f97316", text: "#9a3412" }, off: { bg: "linear-gradient(135deg,#ffffff 0%,#fee2e2 100%)", border: "#ef4444", text: "#991b1b" } }; const p = palettes[variant]; const style: React.CSSProperties = active ? { ...buttonStyle, width: "100%", textAlign: "center", background: p.bg, border: `2px solid ${p.border}`, color: p.text, boxShadow: "inset 0 4px 10px rgba(15,23,42,0.16)", transform: "translateY(2px)", padding: "10px 6px" } : { ...buttonStyle, width: "100%", textAlign: "center", background: "#f8fafc", border: "1px solid #cbd5e1", color: "#475569", boxShadow: "0 2px 0 #cbd5e1", padding: "10px 6px" }; const icons: Record<DayButtonVariant, string> = { work: "▣", holiday: "☀", off: "○" }; return <button type="button" style={style} onClick={onClick}><div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, minHeight: 24 }}><span aria-hidden="true" style={{ fontSize: 13, lineHeight: 1 }}>{icons[variant]}</span><span style={{ fontSize: 13, fontWeight: 950, lineHeight: 1.15 }}>{label}</span></div></button>; }
