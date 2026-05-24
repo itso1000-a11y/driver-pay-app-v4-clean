@@ -1,0 +1,7 @@
+Driver Pay App v4.23 - Day Off / Summary Polish
+
+Changes:
+- English Day Type label changed from Off day to Day Off.
+- Day Summary remains visible for Holiday and Day Off but is softened visually.
+- No pay, rest, archive, navigation, or workflow logic changed.
+- Version metadata updated consistently to v4.23.
