@@ -1,0 +1,7 @@
+Driver Pay App v4.26
+- Emergency hardening build only.
+- Fixes TypeScript typecheck errors by adding React type packages.
+- MiniStat now supports tone="danger".
+- Worked card uses danger styling when duty/worked time exceeds 15h.
+- Preserves v4 generic install name for PWA stability.
+- No pay, rest, archive, navigation, layout, or workflow logic changes intended.

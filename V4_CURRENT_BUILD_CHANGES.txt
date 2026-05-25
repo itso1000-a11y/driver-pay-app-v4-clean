@@ -28,9 +28,3 @@ Upload rules:
 - Do not upload node_modules.
 - Do not upload dist.
 - Do not upload package-lock.json unless intentionally regenerated.
-
-V4.26 HARDENING FIX
-- Completed >15h visual danger state for Worked card.
-- Kept 15h limit exceeded wording.
-- Version/cache metadata updated to v4.26.
-- No pay/rest/archive workflow changes.

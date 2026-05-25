@@ -16,9 +16,3 @@ Main changes in this build:
 Notes:
 - Weekly financial totals are still in Week View.
 - This is still a test V4 build, not final polish.
-
-V4.26 HARDENING FIX
-- Completed >15h visual danger state for Worked card.
-- Kept 15h limit exceeded wording.
-- Version/cache metadata updated to v4.26.
-- No pay/rest/archive workflow changes.
