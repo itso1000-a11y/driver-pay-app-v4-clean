@@ -1,5 +1,6 @@
 declare module "react" {
   namespace React {
+    const StrictMode: any;
     type ReactNode = any;
     type CSSProperties = any;
     type SetStateAction<S> = S | ((prevState: S) => S);
@@ -36,5 +37,6 @@ declare module "react/jsx-runtime" {
 }
 
 declare namespace JSX {
+  interface IntrinsicAttributes { key?: any; }
   interface IntrinsicElements { [elemName: string]: any; }
 }

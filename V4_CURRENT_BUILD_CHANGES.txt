@@ -1,30 +1,28 @@
 Driver Pay App V4 - current build changes
 
-Included fixes/features:
-1. Day summary: Overtime now shows '-' when overtime is zero or no worked hours are entered.
-2. PWA install button: Install button only appears when Chrome provides a real install prompt. No fallback alert.
-3. Custom bonuses in Settings:
-   - Six empty custom bonus slots.
-   - Each slot has name + rate.
-   - Empty custom bonuses are hidden from Add bonus list.
-   - Named custom bonuses appear in Add bonus list.
-   - Custom bonus rate is used in pay calculation.
-4. Existing standard bonuses remain available:
-   - ADR
-   - Genset
-   - Splitter
-   - Driver Assist
-   - London Bonus
-5. Existing V4 fixes retained:
-   - EN/BG language support.
-   - PWA files.
-   - KM carry-forward for Off/Holiday.
-   - Long shift >13h start suggestion fix.
-   - Archive/Backup base logic.
-   - Clean Vercel setup with .npmrc.
+Current build: v4.27
+
+Included in v4.27:
+1. Holiday/Day Off -> Work day KM correction:
+   - If Finish KM was auto-generated from Start KM while the day was Holiday/Day Off, changing the day back to Work now clears Finish KM back to empty/suggested state.
+   - User-entered Finish KM is preserved when it is not the auto-generated non-working value.
+2. v4.26 hardening retained:
+   - MiniStat supports tone="danger".
+   - Worked card can show danger styling when duty/worked time exceeds 15h.
+   - 15h wording remains separated from ordinary long shift wording.
+3. PWA identity retained:
+   - Install name stays generic: Driver Pay App v4 / Driver Pay v4.
+   - Minor version is visible inside the app, not in the shortcut name.
+
+Not changed:
+- No pay calculation changes.
+- No daily rest calculation changes.
+- No archive logic changes.
+- No layout redesign.
+- No weekly rest module yet.
 
 Upload rules:
-- Upload src, public, index.html, package.json, tsconfig.json, vite.config.ts, .npmrc.
+- Upload root files only: package.json, index.html, src, public, tsconfig.json, vite config, vercel.json.
 - Do not upload node_modules.
 - Do not upload dist.
-- Do not upload package-lock.json unless intentionally regenerated.
+- Do not add package-lock.json unless intentionally testing dependency locking.

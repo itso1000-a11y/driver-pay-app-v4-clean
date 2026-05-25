@@ -1,0 +1,7 @@
+Driver Pay App v4.27
+- Small workflow/state correction build.
+- Fixes Holiday/Day Off -> Work day KM behavior.
+- If Finish KM was auto-generated from Start KM by non-working-day logic, it is cleared when switching back to Work day.
+- Manually entered Finish KM is preserved.
+- Version/cache updated to v4.27.
+- No pay, rest, archive, weekly rest, navigation redesign, or layout redesign changes intended.
