@@ -1,0 +1,11 @@
+Driver Pay App v4.29
+
+End Week now creates a weekly-rest candidate anchor from the last completed work shift.
+
+Weekly rest suggestions under Start/Finish are only shown after End Week, using that anchor:
+- 45h weekly rest option with day + time
+- 24h reduced option with day + time and owed-later note
+
+Rest from previous shift remains factual and continues to show actual rest achieved.
+
+No pay logic, archive calculation, storage identity, or daily input fields changed.

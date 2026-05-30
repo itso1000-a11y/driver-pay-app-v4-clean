@@ -1,29 +1,15 @@
-Driver Pay App V4 - current build changes
+Current build: v4.30
 
-Current build: v4.28
+Included in v4.30:
+- End Week triggers Weekly Rest suggestion mode.
+- Suggested Start field uses the 45h weekly rest start while Weekly Rest mode is active.
+- 24h reduced weekly rest remains a secondary helper option.
+- Daily 9h/11h rest rules remain valid but do not override weekly-rest suggestions after End Week.
+- Rest from previous shift uses weekly-rest colour states in Weekly Rest mode.
+- Version/cache metadata synced to v4.30.
 
-Included in v4.28:
-1. First Weekly Rest UX layer:
-   - Rest label changed from "Rest from previous day" to "Rest from previous shift".
-   - Rest card can show weekly-rest context when the rest gap reaches weekly-rest thresholds.
-   - Start/Finish helper can show 45h weekly rest option and 24h reduced option using day + time.
-   - This uses existing Start/Finish and Rest sections; no new daily input fields are added.
-
-2. Vercel Analytics / Speed Insights:
-   - Vercel Web Analytics script added.
-   - Vercel Speed Insights script added.
-
-3. Metadata:
-   - Discreet author/app-owner metadata added.
-
-4. v4.27 retained:
-   - Holiday/Day Off -> Work day KM correction retained.
-   - MiniStat danger support retained.
-   - 15h limit wording/styling retained.
-   - PWA install name remains generic: Driver Pay App v4 / Driver Pay v4.
-
-Protected:
-- Pay calculation logic unchanged.
-- Archive logic unchanged.
-- Daily input field structure unchanged.
-- Storage keys unchanged so existing local data should survive update.
+Not changed:
+- Pay calculation logic.
+- Archive calculation logic.
+- Storage keys / PWA identity.
+- Daily input fields.

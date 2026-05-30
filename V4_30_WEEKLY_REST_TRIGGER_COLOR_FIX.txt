@@ -1,0 +1,7 @@
+v4.30
+- End Week starts Weekly Rest suggestion mode.
+- Suggested Start field uses 45h weekly rest option after End Week.
+- 24h reduced weekly rest remains secondary helper option.
+- Daily 9h/11h rules remain active but stop competing with weekly-rest suggestion after daily rest is already covered.
+- Rest from previous shift uses weekly rest colors during weekly-rest candidate: red <24h, yellow 24h-45h, green 45h+.
+- Switching default Off/Holiday weekend day back to Work cancels/defer the active weekly-rest candidate so a new End Week can start the next candidate.
