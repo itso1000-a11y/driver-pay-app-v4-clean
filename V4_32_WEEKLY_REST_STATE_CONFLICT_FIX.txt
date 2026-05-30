@@ -1,0 +1,10 @@
+Driver Pay App v4.32
+
+Hotfix for Weekly Rest / Daily Rest state conflict.
+
+- Weekly Rest mode still starts from the existing End Week candidate.
+- Suggested Start field now uses the 45h weekly-rest suggestion while weekly-rest mode is active.
+- A stale 11h/9h daily suggestion already stored in the Start field is treated as draft data and hidden/replaced by the weekly-rest suggestion if the day has no real work data.
+- Save & Next now prefers weekly-rest Suggested Start while weekly-rest mode is active.
+- Daily 9h/11h rest logic remains unchanged outside weekly-rest mode.
+- Pay, archive calculations, storage identity, and daily fields are not changed.
