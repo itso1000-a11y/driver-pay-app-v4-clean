@@ -1,28 +1,29 @@
 Driver Pay App V4 - current build changes
 
-Current build: v4.27
+Current build: v4.28
 
-Included in v4.27:
-1. Holiday/Day Off -> Work day KM correction:
-   - If Finish KM was auto-generated from Start KM while the day was Holiday/Day Off, changing the day back to Work now clears Finish KM back to empty/suggested state.
-   - User-entered Finish KM is preserved when it is not the auto-generated non-working value.
-2. v4.26 hardening retained:
-   - MiniStat supports tone="danger".
-   - Worked card can show danger styling when duty/worked time exceeds 15h.
-   - 15h wording remains separated from ordinary long shift wording.
-3. PWA identity retained:
-   - Install name stays generic: Driver Pay App v4 / Driver Pay v4.
-   - Minor version is visible inside the app, not in the shortcut name.
+Included in v4.28:
+1. First Weekly Rest UX layer:
+   - Rest label changed from "Rest from previous day" to "Rest from previous shift".
+   - Rest card can show weekly-rest context when the rest gap reaches weekly-rest thresholds.
+   - Start/Finish helper can show 45h weekly rest option and 24h reduced option using day + time.
+   - This uses existing Start/Finish and Rest sections; no new daily input fields are added.
 
-Not changed:
-- No pay calculation changes.
-- No daily rest calculation changes.
-- No archive logic changes.
-- No layout redesign.
-- No weekly rest module yet.
+2. Vercel Analytics / Speed Insights:
+   - Vercel Web Analytics script added.
+   - Vercel Speed Insights script added.
 
-Upload rules:
-- Upload root files only: package.json, index.html, src, public, tsconfig.json, vite config, vercel.json.
-- Do not upload node_modules.
-- Do not upload dist.
-- Do not add package-lock.json unless intentionally testing dependency locking.
+3. Metadata:
+   - Discreet author/app-owner metadata added.
+
+4. v4.27 retained:
+   - Holiday/Day Off -> Work day KM correction retained.
+   - MiniStat danger support retained.
+   - 15h limit wording/styling retained.
+   - PWA install name remains generic: Driver Pay App v4 / Driver Pay v4.
+
+Protected:
+- Pay calculation logic unchanged.
+- Archive logic unchanged.
+- Daily input field structure unchanged.
+- Storage keys unchanged so existing local data should survive update.
