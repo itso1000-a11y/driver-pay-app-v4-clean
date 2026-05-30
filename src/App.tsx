@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.30";
+const APP_VERSION = "v4.31";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -505,6 +505,12 @@ function getDayTimeAbsMinutes(day: DayRecord, time: string): number | null {
   return Math.floor(date.getTime() / 60000) + mins;
 }
 
+function getDayStartAbsMinutes(day: DayRecord): number {
+  const date = fromISODate(day.dateISO);
+  date.setHours(0, 0, 0, 0);
+  return Math.floor(date.getTime() / 60000);
+}
+
 function formatShortDayTime(absMinutes: number | null): string {
   if (absMinutes == null) return "";
   const date = new Date(absMinutes * 60000);
@@ -628,12 +634,9 @@ function getWeeklyRestContextHelp(restMinutes: number | null, requiredMinutes: n
 
 function getRestContextHelp(restMinutes: number | null): string {
   if (restMinutes == null) return "";
-  if (restMinutes >= 45 * 60) return t("weeklyRestComplete");
-  if (restMinutes >= 24 * 60) {
-    const remaining = Math.ceil((45 * 60 - restMinutes) / 60);
-    return `${t("reducedWeeklyRest")} · ${remaining}h ${t("toFullWeeklyRest")}`;
-  }
-  return "";
+  if (restMinutes >= 11 * 60) return t("dailyRestCompleted");
+  if (restMinutes >= 9 * 60) return t("rest9");
+  return t("violation");
 }
 
 function statusPalette(status: RestStatus) {
@@ -1187,7 +1190,14 @@ export default function App() {
       if (!ok) return;
     }
     const currentWeeklyCandidate = readWeeklyRestCandidate();
-    const cancelWeeklyCandidate = Boolean(currentWeeklyCandidate && type === "work" && (current.dayType === "holiday" || current.dayType === "off") && selectedSaturday > currentWeeklyCandidate.closingSaturdayISO);
+    const currentDayStartAbs = current ? getDayStartAbsMinutes(current) : null;
+    const cancelWeeklyCandidate = Boolean(
+      currentWeeklyCandidate &&
+      type === "work" &&
+      (current.dayType === "holiday" || current.dayType === "off") &&
+      currentDayStartAbs != null &&
+      currentDayStartAbs >= currentWeeklyCandidate.finishAbs
+    );
     if (cancelWeeklyCandidate) writeWeeklyRestCandidate(null);
     setDays((prev) => prev.map((day, index) => {
       if (index !== currentIndex) return day;
@@ -1289,7 +1299,7 @@ export default function App() {
   const weeklyRestPrimaryStart = getWeeklyRestPrimaryStart(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, weeklyRestCandidateActive && !currentDay.start);
   const weeklyRestSuggestionHelp = getWeeklyRestSuggestionHelp(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, currentDay, weeklyRestCandidateActive && !currentDay.start);
   const dailySuggestionHelp = weeklyRestCandidateActive && (restBeforeMinutes ?? 0) >= 9 * 60 ? "" : getSuggestedStartHelp(suggestedTimes);
-  const weeklyRestPalette = getWeeklyRestPalette(restBeforeMinutes, weeklyRestRequiredMinutes);
+  const weeklyRestPalette = weeklyRestCandidateActive ? getWeeklyRestPalette(restBeforeMinutes, weeklyRestRequiredMinutes) : null;
   const activeRestColors = weeklyRestPalette || restBeforeColors;
   const restContextHelp = weeklyRestCandidateActive ? getWeeklyRestContextHelp(restBeforeMinutes, weeklyRestRequiredMinutes) : getRestContextHelp(restBeforeMinutes);
   const activeBonusTypes = useMemo(() => getActiveBonusTypes(settings), [settings]);

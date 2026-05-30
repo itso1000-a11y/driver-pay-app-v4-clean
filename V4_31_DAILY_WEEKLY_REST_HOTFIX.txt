@@ -1,0 +1,10 @@
+Driver Pay App v4.31
+
+Hotfix:
+- Daily rest colour/status is no longer evaluated as weekly-rest violation unless Weekly Rest candidate mode is active.
+- Normal 11h+ rest remains green/daily-rest-completed.
+- 9h-11h remains reduced daily rest.
+- Weekly-rest palette applies only when End Week has created an active weekly-rest candidate.
+- Changing an Off/Holiday day to Work after the weekly-rest anchor cancels/defers the candidate to the next End Week.
+
+No pay logic or archive calculation changes.

@@ -1,12 +1,12 @@
-Current build: v4.30
+Current build: v4.31
 
-Included in v4.30:
+Included in v4.31:
 - End Week triggers Weekly Rest suggestion mode.
 - Suggested Start field uses the 45h weekly rest start while Weekly Rest mode is active.
 - 24h reduced weekly rest remains a secondary helper option.
 - Daily 9h/11h rest rules remain valid but do not override weekly-rest suggestions after End Week.
 - Rest from previous shift uses weekly-rest colour states in Weekly Rest mode.
-- Version/cache metadata synced to v4.30.
+- Version/cache metadata synced to v4.31.
 
 Not changed:
 - Pay calculation logic.
