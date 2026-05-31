@@ -1,8 +1,3 @@
-Current build: v4.36
+Current build: v4.37
 
-- Weekly Rest engine polish: shorter labels and clearer colours.
-- Start field still carries the 45h weekly rest time when Weekly Rest mode is active.
-- Reduced 24h option remains secondary.
-- Start KM suggestion is faded when carried forward and not actually entered.
-- Manual earlier start does not get forced back into Weekly Rest mode.
-- Pay/archive/storage identity unchanged.
+Hotfix: hide old 9h daily suggestion in weekly-rest scenarios; sync visible app version/cache.
