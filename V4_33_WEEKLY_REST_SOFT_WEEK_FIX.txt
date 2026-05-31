@@ -1,0 +1,7 @@
+v4.33 Weekly Rest soft/current week fix
+
+- Weekly Rest candidate is derived from the previous closed week when opening the next current/soft week.
+- This keeps old archive data untouched and uses it as computed overlay only.
+- Weekly Rest mode remains active for the first work day after End Week until a completed work shift exists in the new week.
+- Daily 9h/11h logic remains active outside Weekly Rest mode and after the first new-week shift.
+- Version/cache synced to v4.33.

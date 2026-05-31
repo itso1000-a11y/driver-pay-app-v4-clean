@@ -1,4 +1,4 @@
-Driver Pay App v4.31
+Driver Pay App v4
 
 Hotfix:
 - Daily rest colour/status is no longer evaluated as weekly-rest violation unless Weekly Rest candidate mode is active.

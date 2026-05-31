@@ -1,4 +1,4 @@
-Driver Pay App v4.32
+Driver Pay App v4
 
 Hotfix for Weekly Rest / Daily Rest state conflict.
 

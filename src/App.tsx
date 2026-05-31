@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.32";
+const APP_VERSION = "v4.33";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -586,6 +586,25 @@ function writeWeeklyRestCandidate(candidate: WeeklyRestCandidate | null) {
   if (typeof window === "undefined") return;
   if (!candidate) localStorage.removeItem(WEEKLY_REST_CANDIDATE_STORAGE_KEY);
   else localStorage.setItem(WEEKLY_REST_CANDIDATE_STORAGE_KEY, JSON.stringify(candidate));
+}
+
+function getWeeklyRestCandidateForSelectedWeek(selectedSaturdayISO: string): WeeklyRestCandidate | null {
+  const stored = readWeeklyRestCandidate();
+  if (stored && selectedSaturdayISO > stored.closingSaturdayISO) return stored;
+
+  // Backfill/derive the candidate for users who closed the previous week
+  // before the Weekly Rest feature existed, or when the active pointer moved
+  // to the next soft/current week. This is a computed overlay only: it does
+  // not rewrite old archive data.
+  try {
+    const previousSaturdayISO = toISODate(addDays(fromISODate(selectedSaturdayISO), -7));
+    if (!isWeekClosed(previousSaturdayISO)) return null;
+    const previousWeek = loadSavedWeekDataOrBlank(previousSaturdayISO);
+    const anchor = getLastCompletedWorkShiftInWeek(previousWeek.days);
+    return anchor ? { closingSaturdayISO: previousSaturdayISO, finishAbs: anchor.finishAbs } : null;
+  } catch {
+    return null;
+  }
 }
 
 function getWeeklyRestTargets(anchor: { finishAbs: number } | null) {
@@ -1198,7 +1217,11 @@ export default function App() {
       currentDayStartAbs != null &&
       currentDayStartAbs >= currentWeeklyCandidate.finishAbs
     );
-    if (cancelWeeklyCandidate) writeWeeklyRestCandidate(null);
+    // Do not clear the weekly-rest candidate immediately on Off/Holiday -> Work.
+    // The first real work start after End Week is exactly where we need to measure
+    // the achieved weekly rest. Later days naturally fall back to daily rest because
+    // there will be a completed shift earlier in the current week.
+    if (cancelWeeklyCandidate) { /* measured by first work start; keep candidate for this view */ }
     setDays((prev) => prev.map((day, index) => {
       if (index !== currentIndex) return day;
       if (type === "work") {
@@ -1295,8 +1318,9 @@ export default function App() {
   const restBeforeColors = statusPalette(getEffectiveRestStatus(restBeforeMinutes, previousWorked, Boolean(previousShiftAnchor?.day.splitBreak || previousDay?.splitBreak), reducedCount));
   const suggestedTimes = getSuggestedStartTimes(previousShiftAnchor ? parseTimeToMinutes(previousShiftAnchor.day.finish) : (previousDay ? parseTimeToMinutes(previousDay.finish) : null), reducedCount, previousWorked, Boolean(previousShiftAnchor?.day.splitBreak || previousDay?.splitBreak));
   const dailyPrimarySuggestedStart = getPrimarySuggestedStart(suggestedTimes);
-  const weeklyRestCandidate = readWeeklyRestCandidate();
-  const weeklyRestCandidateActive = Boolean(weeklyRestCandidate && selectedSaturday > weeklyRestCandidate.closingSaturdayISO && currentDay.dayType === "work");
+  const weeklyRestCandidate = getWeeklyRestCandidateForSelectedWeek(selectedSaturday);
+  const hasCompletedWorkBeforeCurrentInThisWeek = Boolean(weeklyRestCandidate && previousShiftAnchor && previousShiftAnchor.finishAbs >= weeklyRestCandidate.finishAbs);
+  const weeklyRestCandidateActive = Boolean(weeklyRestCandidate && selectedSaturday > weeklyRestCandidate.closingSaturdayISO && currentDay.dayType === "work" && !hasCompletedWorkBeforeCurrentInThisWeek);
   const weeklyRestRequiredMinutes = 45 * 60;
   const weeklyRestPrimaryStart = getWeeklyRestPrimaryStart(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, weeklyRestCandidateActive);
   const weeklyRestSuggestionHelp = getWeeklyRestSuggestionHelp(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, currentDay, weeklyRestCandidateActive);
