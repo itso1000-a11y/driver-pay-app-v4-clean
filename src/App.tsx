@@ -493,10 +493,6 @@ function getPrimarySuggestedStart(suggested: SuggestedStarts): string {
 function getSuggestedStartHelp(suggested: SuggestedStarts): string {
   const parts: string[] = [];
   if (suggested.longPreviousShift) parts.push(t("previousShiftTooLongFor11h"));
-  if (suggested.h9 != null) {
-    if (suggested.splitRestAvailable) parts.push(`${t("nineHourOption")}: ${minutesToTime(suggested.h9)} (${t("splitRestNotCounted")})`);
-    else parts.push(suggested.h9Blocked ? `${t("nineHourOption")}: ${minutesToTime(suggested.h9)} (${t("reducedLimitReached")})` : `${t("nineHourOption")}: ${minutesToTime(suggested.h9)}`);
-  }
   return parts.join(" · ");
 }
 
