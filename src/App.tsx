@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.34";
+const APP_VERSION = "v4.35";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -357,6 +357,12 @@ function minutesToTime(mins: number | null): string {
   return `${String(Math.floor(mins / 60) % 24).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
 }
 
+function absMinutesToLocalTime(absMinutes: number | null): string {
+  if (absMinutes == null) return "";
+  const date = new Date(absMinutes * 60000);
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
 function parseDecimal(value: string): number {
   const parsed = Number(String(value || "").replace(",", ".").trim());
   return Number.isFinite(parsed) ? parsed : 0;
@@ -622,7 +628,7 @@ function getWeeklyRestTargets(anchor: { finishAbs: number } | null) {
 
 function getWeeklyRestPrimaryStart(anchor: { finishAbs: number } | null, enabled: boolean): string {
   const targets = enabled ? getWeeklyRestTargets(anchor) : null;
-  return targets ? minutesToTime(((targets.fullStart % (24 * 60)) + (24 * 60)) % (24 * 60)) : "";
+  return targets ? absMinutesToLocalTime(targets.fullStart) : "";
 }
 
 function getWeeklyRestSuggestionHelp(anchor: { finishAbs: number } | null, current: DayRecord, enabled: boolean): string {
@@ -1353,7 +1359,7 @@ export default function App() {
   const weeklyRestSuggestionHelp = getWeeklyRestSuggestionHelp(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, currentDay, weeklyRestCandidateActive);
   const staleDailyStartInWeeklyMode = Boolean(weeklyRestCandidateActive && currentDay.start && dailyPrimarySuggestedStart && currentDay.start === dailyPrimarySuggestedStart && !dayHasDestructiveWorkData(currentDay));
   const displayStartValue = staleDailyStartInWeeklyMode ? "" : (currentDay.start || "");
-  const dailySuggestionHelp = weeklyRestCandidateActive && (restBeforeMinutes ?? 0) >= 9 * 60 ? "" : getSuggestedStartHelp(suggestedTimes);
+  const dailySuggestionHelp = weeklyRestCandidateActive ? "" : getSuggestedStartHelp(suggestedTimes);
   const weeklyRestPalette = weeklyRestCandidateActive ? getWeeklyRestPalette(restBeforeMinutes, weeklyRestRequiredMinutes) : null;
   const activeRestColors = weeklyRestPalette || restBeforeColors;
   const restContextHelp = weeklyRestCandidateActive ? getWeeklyRestContextHelp(restBeforeMinutes, weeklyRestRequiredMinutes) : getRestContextHelp(restBeforeMinutes);

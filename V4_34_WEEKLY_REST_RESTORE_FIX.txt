@@ -1,4 +1,4 @@
-v4.34 Weekly Rest / Restore hotfix
+v4.35 Weekly Rest / Restore hotfix
 
 - Weekly Rest candidate now remains active for the next soft/current week after End Week.
 - Fixes the conflict where the previous week's Friday finish was counted as a completed shift inside the new week, causing the app to fall back to 11h daily suggestion.
