@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.33";
+const APP_VERSION = "v4.34";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -534,8 +534,14 @@ function getLastCompletedWorkShiftBeforeIndex(days: DayRecord[], index: number, 
   try {
     const previousSaturdayISO = toISODate(addDays(fromISODate(saturdayISO), -7));
     const saved = localStorage.getItem(getWeekStorageKey(previousSaturdayISO));
-    if (!saved) return null;
-    const parsed = JSON.parse(saved);
+    let parsed: any = saved ? JSON.parse(saved) : null;
+    if (!parsed) {
+      const archiveItems = JSON.parse(localStorage.getItem("archive") || "[]");
+      if (Array.isArray(archiveItems)) {
+        parsed = archiveItems.find((item) => Array.isArray(item?.days) && getSaturdayDay(item.days).dateISO === previousSaturdayISO) || null;
+      }
+    }
+    if (!parsed) return null;
     const rawDays = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.days) ? parsed.days : [];
     const previousWeek = buildPayrollWeek(previousSaturdayISO).map((day, weekIndex) => sanitizeDayRecord(rawDays[weekIndex], day));
     const previousOrdered = getOrderedDayIndices(previousWeek);
@@ -807,8 +813,15 @@ function loadSavedWeekDataOrBlank(saturdayISO: string): SavedWeekData {
   if (typeof window === "undefined") return fallback;
   try {
     const saved = localStorage.getItem(getWeekStorageKey(saturdayISO));
-    if (!saved) return fallback;
-    const parsed = JSON.parse(saved);
+    let parsed: any = null;
+    if (saved) parsed = JSON.parse(saved);
+    if (!parsed) {
+      const archiveItems = JSON.parse(localStorage.getItem("archive") || "[]");
+      if (Array.isArray(archiveItems)) {
+        parsed = archiveItems.find((item) => Array.isArray(item?.days) && getSaturdayDay(item.days).dateISO === saturdayISO) || null;
+      }
+    }
+    if (!parsed) return fallback;
     const rawDays = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.days) ? parsed.days : [];
     return { days: fallbackDays.map((day, index) => sanitizeDayRecord(rawDays[index], day)), settings: Array.isArray(parsed) ? initialSettings : sanitizeSettings(parsed?.settings), payslipActualWeek: typeof parsed?.payslipActualWeek === "string" ? parsed.payslipActualWeek : "" };
   } catch {
@@ -946,8 +959,15 @@ function restoreDriverBackupFile(file: File, callbacks: {
       if (!restoredDays.length) throw new Error("No days in backup");
       if (parsed.savedWeeks && typeof parsed.savedWeeks === "object") {
         Object.entries(parsed.savedWeeks).forEach(([saturdayISO, weekData]) => {
-          if (saturdayISO && weekData && Array.isArray((weekData as SavedWeekData).days)) {
-            localStorage.setItem(getWeekStorageKey(saturdayISO), JSON.stringify(weekData));
+          const rawWeek = weekData as Partial<SavedWeekData>;
+          if (saturdayISO && rawWeek && Array.isArray(rawWeek.days)) {
+            const fallbackDays = buildPayrollWeek(saturdayISO);
+            const cleanedWeek: SavedWeekData = {
+              days: fallbackDays.map((day, index) => sanitizeDayRecord(rawWeek.days?.[index], day)),
+              settings: sanitizeSettings(rawWeek.settings),
+              payslipActualWeek: typeof rawWeek.payslipActualWeek === "string" ? rawWeek.payslipActualWeek : "",
+            };
+            localStorage.setItem(getWeekStorageKey(saturdayISO), JSON.stringify(cleanedWeek));
           }
         });
       }
@@ -1319,7 +1339,14 @@ export default function App() {
   const suggestedTimes = getSuggestedStartTimes(previousShiftAnchor ? parseTimeToMinutes(previousShiftAnchor.day.finish) : (previousDay ? parseTimeToMinutes(previousDay.finish) : null), reducedCount, previousWorked, Boolean(previousShiftAnchor?.day.splitBreak || previousDay?.splitBreak));
   const dailyPrimarySuggestedStart = getPrimarySuggestedStart(suggestedTimes);
   const weeklyRestCandidate = getWeeklyRestCandidateForSelectedWeek(selectedSaturday);
-  const hasCompletedWorkBeforeCurrentInThisWeek = Boolean(weeklyRestCandidate && previousShiftAnchor && previousShiftAnchor.finishAbs >= weeklyRestCandidate.finishAbs);
+  const selectedWeekStartISO = toISODate(addDays(fromISODate(selectedSaturday), -6));
+  const previousShiftIsInsideSelectedWeek = Boolean(previousShiftAnchor && previousShiftAnchor.day.dateISO >= selectedWeekStartISO);
+  const hasCompletedWorkBeforeCurrentInThisWeek = Boolean(
+    weeklyRestCandidate &&
+    previousShiftAnchor &&
+    previousShiftIsInsideSelectedWeek &&
+    previousShiftAnchor.finishAbs > weeklyRestCandidate.finishAbs
+  );
   const weeklyRestCandidateActive = Boolean(weeklyRestCandidate && selectedSaturday > weeklyRestCandidate.closingSaturdayISO && currentDay.dayType === "work" && !hasCompletedWorkBeforeCurrentInThisWeek);
   const weeklyRestRequiredMinutes = 45 * 60;
   const weeklyRestPrimaryStart = getWeeklyRestPrimaryStart(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, weeklyRestCandidateActive);

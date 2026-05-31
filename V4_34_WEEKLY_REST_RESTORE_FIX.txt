@@ -1,0 +1,9 @@
+v4.34 Weekly Rest / Restore hotfix
+
+- Weekly Rest candidate now remains active for the next soft/current week after End Week.
+- Fixes the conflict where the previous week's Friday finish was counted as a completed shift inside the new week, causing the app to fall back to 11h daily suggestion.
+- Weekly Rest suggestions should now take priority over daily 9h/11h suggestions until a real shift is completed in the new week or weekend Off/Holiday is changed to Work.
+- Restore path now sanitizes savedWeeks entries and supports older v4 settings such as weekendRate via sanitizeSettings.
+- loadSavedWeekDataOrBlank and previous-week rest lookup can fall back to archive records if individual saved week keys are missing.
+- No pay calculation changes.
+- No archive rewrite/migration.
