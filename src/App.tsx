@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.35";
+const APP_VERSION = "v4.36";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -20,7 +20,7 @@ const UI_TEXT: Record<Lang, Record<string, string>> = {
     settingsTitle: "Settings", backupRestore: "Backup / Restore", recommended: "recommended", backupInfo: "Save a copy of all weeks, current entries, settings, archive, and payslip comparison. Restore it if Edge data is cleared or you move to another computer.", backup: "Backup", restore: "Restore", payRates: "Pay rates", weekdayPayRate: "Weekday pay rate", saturdayPayRate: "Saturday pay rate", sundayPayRate: "Sunday pay rate", pensionMode: "Pension mode", noPension: "No pension", manualPension: "Manual pension", pensionDeduction: "Pension deduction", overtimeThreshold: "Overtime threshold (hours)", overtimePayRate: "Overtime pay rate", foodAllowance: "Food allowance per worked day", nightOutPay: "Night out pay", bonusPayRates: "Bonus pay rates", customBonuses: "Custom bonuses", customBonusName: "Bonus name", customBonusRate: "Rate", done: "Done",
     weekPreview: "Week Preview", close: "Close", estimatedNet: "Estimated Net", payslipNet: "Payslip Net", difference: "Difference", days: "Days", noPoundsHere: "no £ here", holiday: "Holiday", off: "Off", showBreakdown: "Show breakdown", hideBreakdown: "Hide breakdown", basePay: "Base pay", food: "Food", tax: "Tax", ni: "NI", net: "Net", splitRests: "Split rests", back: "Back", endWeek: "End Week",
     endWeekPreview: "End Week Preview", totalHours: "Total hours", reducedRests: "Reduced rests", confirmInfo: "Confirming will close this week, save an automatic backup, and open the next week. Choose how to mark the remaining days.", confirmCloseWeek: "Confirm & Close Week", remainingOff: "Remaining Off", remainingHoliday: "Remaining Holiday",
-    nineHourOption: "9h option", reducedLimitReached: "reduced limit reached", splitRestNotCounted: "split rest - not counted", incompleteShift: "Incomplete shift.", finishBeforeStart: "Finish time is before start.", longShift: "Long shift", shiftLimitExceeded: "15h limit exceeded", rest11: "11h rest", rest9: "9h rest", previousShiftTooLongFor11h: "11h rest unavailable", weeklyRest45Option: "45h weekly rest option", weeklyRest24Option: "24h reduced option", owedLater: "owed later", toFullWeeklyRest: "to full weekly rest", weeklyRestComplete: "weekly rest complete", reducedWeeklyRest: "reduced weekly rest", compensationMissing: "compensation missing", weeklyRestRequired: "weekly rest required", dailyRestCompleted: "daily rest completed", violation: "Violation", pending: "Pending", backupRestored: "Backup restored successfully.", backupFailed: "This backup file could not be restored.", installHelp: "Use your browser menu and choose Install app / Add to Home screen.", futureWeekClose: "Close empty week", fastCloseHint: "This week has no work data. Mark the days and close it without filling day by day.", allOff: "All Off", allHoliday: "All Holiday", chooseDays: "Choose days", closeFutureWeek: "Close this week", goToCurrentWeek: "Go to current week", savedWeeks: "Saved weeks", noSavedWeeks: "No saved weeks yet", fullWeek: "full", partialWeek: "partial", selectSaturday: "Select Saturday", savedFull: "Saved full", savedPartial: "Saved partial", emptyWeek: "Empty", restSnapshot: "Rest snapshot", usedExtras: "Used extras / markers", detailedView: "Detailed view", hideDailyDetails: "Hide daily details", archiveWatermark: "ARCHIVE", editingArchive: "Archive edit mode"
+    nineHourOption: "9h option", reducedLimitReached: "reduced limit reached", splitRestNotCounted: "split rest - not counted", incompleteShift: "Incomplete shift.", finishBeforeStart: "Finish time is before start.", longShift: "Long shift", shiftLimitExceeded: "15h limit exceeded", rest11: "11h rest", rest9: "9h rest", previousShiftTooLongFor11h: "11h rest unavailable", weeklyRest45Option: "Weekly rest", weeklyRest24Option: "Reduced", owedLater: "later", toFullWeeklyRest: "left", weeklyRestComplete: "Weekly rest done", reducedWeeklyRest: "Reduced rest", compensationMissing: "Hours missing", weeklyRestRequired: "Weekly rest needed", dailyRestCompleted: "Daily rest done", violation: "Check rest", pending: "Pending", backupRestored: "Backup restored successfully.", backupFailed: "This backup file could not be restored.", installHelp: "Use your browser menu and choose Install app / Add to Home screen.", futureWeekClose: "Close empty week", fastCloseHint: "This week has no work data. Mark the days and close it without filling day by day.", allOff: "All Off", allHoliday: "All Holiday", chooseDays: "Choose days", closeFutureWeek: "Close this week", goToCurrentWeek: "Go to current week", savedWeeks: "Saved weeks", noSavedWeeks: "No saved weeks yet", fullWeek: "full", partialWeek: "partial", selectSaturday: "Select Saturday", savedFull: "Saved full", savedPartial: "Saved partial", emptyWeek: "Empty", restSnapshot: "Rest snapshot", usedExtras: "Used extras / markers", detailedView: "Detailed view", hideDailyDetails: "Hide daily details", archiveWatermark: "ARCHIVE", editingArchive: "Archive edit mode"
   },
   bg: {
     chooseLanguage: "Избери език", appTitle: "Driver Pay App V4", currentDay: "Текущ ден", install: "Инсталирай", week: "Седмица", settings: "Настройки", language: "Език",
@@ -33,7 +33,7 @@ const UI_TEXT: Record<Lang, Record<string, string>> = {
     settingsTitle: "Настройки", backupRestore: "Архив / Възстановяване", recommended: "препоръчително", backupInfo: "Запазва копие на всички седмици, текущите данни, настройките, архива и сравнението с фиша. Възстановява при изчистване на данните или смяна на компютър.", backup: "Направи backup", restore: "Възстанови", payRates: "Ставки", weekdayPayRate: "Делнична ставка", saturdayPayRate: "Събота ставка", sundayPayRate: "Неделя ставка", pensionMode: "Пенсионен режим", noPension: "Без пенсия", manualPension: "Ръчна пенсия", pensionDeduction: "Пенсионно удържане", overtimeThreshold: "Праг за овъртайм (часове)", overtimePayRate: "Овъртайм ставка", foodAllowance: "Пари за храна на работен ден", nightOutPay: "Нощувка £", bonusPayRates: "Ставки за бонуси", customBonuses: "Допълнителни бонуси", customBonusName: "Име на бонус", customBonusRate: "Ставка", done: "Готово",
     weekPreview: "Седмично превю", close: "Затвори", estimatedNet: "Очаквано нето", payslipNet: "Нето по фиш", difference: "Разлика", days: "Дни", noPoundsHere: "без £ тук", holiday: "Отпуск", off: "Почивен", showBreakdown: "Покажи разбивка", hideBreakdown: "Скрий разбивка", basePay: "Основно плащане", food: "Храна", tax: "Данък", ni: "NI", net: "Нето", splitRests: "Сплит почивки", back: "Назад", endWeek: "Край на седмицата",
     endWeekPreview: "Превю преди край", totalHours: "Общо часове", reducedRests: "9ч редуцирани", confirmInfo: "Потвърждението затваря седмицата, прави автоматичен backup и отваря следващата седмица. Избери как да се маркират оставащите дни.", confirmCloseWeek: "Потвърди и затвори", remainingOff: "Оставащите почивни", remainingHoliday: "Оставащите отпуск",
-    nineHourOption: "9ч старт", reducedLimitReached: "лимитът за 9ч е достигнат", splitRestNotCounted: "сплит почивка - не се брои", incompleteShift: "Незавършена смяна.", finishBeforeStart: "Крайният час е преди стартовия.", longShift: "Дълга смяна", shiftLimitExceeded: "Надвишен лимит 15ч", rest11: "11ч почивка", rest9: "9ч почивка", previousShiftTooLongFor11h: "11ч почивка не е възможна", weeklyRest45Option: "45ч седмична почивка", weeklyRest24Option: "24ч съкратена опция", owedLater: "за връщане", toFullWeeklyRest: "до пълна седмична почивка", weeklyRestComplete: "седмичната почивка е покрита", reducedWeeklyRest: "съкратена седмична почивка", compensationMissing: "компенсацията не е покрита", weeklyRestRequired: "нужна седмична почивка", dailyRestCompleted: "дневната почивка е покрита", violation: "Нарушение", pending: "Очаква", backupRestored: "Backup-ът е възстановен.", backupFailed: "Този backup файл не може да се възстанови.", installHelp: "Използвай менюто на браузъра и избери Инсталирай приложението / Добави на началния екран.", futureWeekClose: "Затвори празна седмица", fastCloseHint: "Тази седмица няма работни данни. Маркирай дните и я затвори без попълване ден по ден.", allOff: "Всички почивни", allHoliday: "Всички отпуск", chooseDays: "Избор по дни", closeFutureWeek: "Затвори седмицата", goToCurrentWeek: "Върни към текущата седмица", savedWeeks: "Запазени седмици", noSavedWeeks: "Няма запазени седмици", fullWeek: "пълна", partialWeek: "частична", selectSaturday: "Избери събота", savedFull: "Запазена пълна", savedPartial: "Запазена частична", emptyWeek: "Празна", restSnapshot: "Почивки", usedExtras: "Използвани бонуси / маркери", detailedView: "Подробен изглед", hideDailyDetails: "Скрий дните", archiveWatermark: "АРХИВ", editingArchive: "Редакция на стара запазена седмица"
+    nineHourOption: "9ч старт", reducedLimitReached: "лимитът за 9ч е достигнат", splitRestNotCounted: "сплит почивка - не се брои", incompleteShift: "Незавършена смяна.", finishBeforeStart: "Крайният час е преди стартовия.", longShift: "Дълга смяна", shiftLimitExceeded: "Надвишен лимит 15ч", rest11: "11ч почивка", rest9: "9ч почивка", previousShiftTooLongFor11h: "11ч почивка не е възможна", weeklyRest45Option: "Седмична", weeklyRest24Option: "Съкратена", owedLater: "по-късно", toFullWeeklyRest: "остават", weeklyRestComplete: "Седмичната е покрита", reducedWeeklyRest: "Съкратена почивка", compensationMissing: "Липсват часове", weeklyRestRequired: "Нужна седмична почивка", dailyRestCompleted: "Дневната е покрита", violation: "Провери почивката", pending: "Очаква", backupRestored: "Backup-ът е възстановен.", backupFailed: "Този backup файл не може да се възстанови.", installHelp: "Използвай менюто на браузъра и избери Инсталирай приложението / Добави на началния екран.", futureWeekClose: "Затвори празна седмица", fastCloseHint: "Тази седмица няма работни данни. Маркирай дните и я затвори без попълване ден по ден.", allOff: "Всички почивни", allHoliday: "Всички отпуск", chooseDays: "Избор по дни", closeFutureWeek: "Затвори седмицата", goToCurrentWeek: "Върни към текущата седмица", savedWeeks: "Запазени седмици", noSavedWeeks: "Няма запазени седмици", fullWeek: "пълна", partialWeek: "частична", selectSaturday: "Избери събота", savedFull: "Запазена пълна", savedPartial: "Запазена частична", emptyWeek: "Празна", restSnapshot: "Почивки", usedExtras: "Използвани бонуси / маркери", detailedView: "Подробен изглед", hideDailyDetails: "Скрий дните", archiveWatermark: "АРХИВ", editingArchive: "Редакция на стара запазена седмица"
   }
 };
 function t(key: string): string { return UI_TEXT[uiLang]?.[key] || UI_TEXT.en[key] || key; }
@@ -635,25 +635,23 @@ function getWeeklyRestSuggestionHelp(anchor: { finishAbs: number } | null, curre
   if (!enabled || !anchor || current.dayType !== "work") return "";
   const targets = getWeeklyRestTargets(anchor);
   if (!targets) return "";
-  const parts: string[] = [];
-  parts.push(`${t("weeklyRest45Option")}: ${formatShortDayTime(targets.fullStart)}`);
-  parts.push(`${t("weeklyRest24Option")}: ${formatShortDayTime(targets.reducedStart)} (${targets.reducedOwedHours}h ${t("owedLater")})`);
-  return parts.join(" · ");
+  // Keep this human and short. The Start field already shows the 45h time.
+  return `${t("weeklyRest45Option")}: ${formatShortDayTime(targets.fullStart)} · ${t("weeklyRest24Option")}: ${formatShortDayTime(targets.reducedStart)} (+${targets.reducedOwedHours}h ${t("owedLater")})`;
 }
 
 function getWeeklyRestPalette(restMinutes: number | null, requiredMinutes: number) {
   if (restMinutes == null) return null;
-  if (restMinutes < 24 * 60) return statusPalette("violation");
-  if (requiredMinutes > 45 * 60) return restMinutes >= requiredMinutes ? statusPalette("good") : statusPalette("violation");
-  if (restMinutes >= 45 * 60) return statusPalette("good");
-  return statusPalette("reduced");
+  if (restMinutes < 24 * 60) return { ...statusPalette("violation"), label: t("weeklyRestRequired") };
+  if (requiredMinutes > 45 * 60) return restMinutes >= requiredMinutes ? { ...statusPalette("good"), label: t("weeklyRestComplete") } : { ...statusPalette("violation"), label: t("compensationMissing") };
+  if (restMinutes >= 45 * 60) return { ...statusPalette("good"), label: t("weeklyRestComplete") };
+  return { ...statusPalette("reduced"), label: t("reducedWeeklyRest") };
 }
 
 function getWeeklyRestContextHelp(restMinutes: number | null, requiredMinutes: number): string {
   if (restMinutes == null) return "";
   if (requiredMinutes > 45 * 60) {
     const missing = Math.ceil(Math.max(0, requiredMinutes - restMinutes) / 60);
-    return restMinutes >= requiredMinutes ? t("weeklyRestComplete") : `${Math.ceil(requiredMinutes / 60)}h ${t("weeklyRestRequired")} · ${missing}h ${t("toFullWeeklyRest")}`;
+    return restMinutes >= requiredMinutes ? t("weeklyRestComplete") : `${missing}h ${t("toFullWeeklyRest")}`;
   }
   if (restMinutes >= 45 * 60) return t("weeklyRestComplete");
   if (restMinutes >= 24 * 60) {
@@ -1138,7 +1136,7 @@ export default function App() {
   const previousFinishKm = lastFinishKmThisWeek || previousWeekFinishKm;
   const startKmSuggestionSource = lastFinishKmThisWeek ? "last saved day" : previousWeekFinishKm ? "last week" : "";
   const displayStartKm = currentDay.startKm || previousFinishKm;
-  const startKmIsSuggested = !currentDay.startKm && Boolean(previousFinishKm);
+  const startKmIsSuggested = Boolean(previousFinishKm && displayStartKm === previousFinishKm && !dayHasDestructiveWorkData(currentDay));
   const hasWeeklySplitBreak = useMemo(() => days.some((day) => day.splitBreak), [days]);
   const weekEndingLabel = useMemo(() => getWeekEndingLabel(days), [days]);
   const currentWeekSaturdayISO = getSaturdayDay(days).dateISO;
@@ -1353,7 +1351,17 @@ export default function App() {
     previousShiftIsInsideSelectedWeek &&
     previousShiftAnchor.finishAbs > weeklyRestCandidate.finishAbs
   );
-  const weeklyRestCandidateActive = Boolean(weeklyRestCandidate && selectedSaturday > weeklyRestCandidate.closingSaturdayISO && currentDay.dayType === "work" && !hasCompletedWorkBeforeCurrentInThisWeek);
+  const weeklyRestBaseActive = Boolean(weeklyRestCandidate && selectedSaturday > weeklyRestCandidate.closingSaturdayISO && currentDay.dayType === "work" && !hasCompletedWorkBeforeCurrentInThisWeek);
+  const weeklyRestBasePrimaryStart = getWeeklyRestPrimaryStart(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, weeklyRestBaseActive);
+  const userStartedBeforeWeeklyRest = Boolean(
+    weeklyRestBaseActive &&
+    currentDay.start &&
+    weeklyRestBasePrimaryStart &&
+    currentDay.start !== weeklyRestBasePrimaryStart &&
+    !currentDay.finish &&
+    !dayHasDestructiveWorkData(currentDay)
+  );
+  const weeklyRestCandidateActive = Boolean(weeklyRestBaseActive && !userStartedBeforeWeeklyRest);
   const weeklyRestRequiredMinutes = 45 * 60;
   const weeklyRestPrimaryStart = getWeeklyRestPrimaryStart(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, weeklyRestCandidateActive);
   const weeklyRestSuggestionHelp = getWeeklyRestSuggestionHelp(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, currentDay, weeklyRestCandidateActive);

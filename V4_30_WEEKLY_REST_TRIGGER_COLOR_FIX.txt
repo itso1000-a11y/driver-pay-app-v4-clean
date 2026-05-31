@@ -1,4 +1,4 @@
-v4.33
+v4.36
 - End Week starts Weekly Rest suggestion mode.
 - Suggested Start field uses 45h weekly rest option after End Week.
 - 24h reduced weekly rest remains secondary helper option.

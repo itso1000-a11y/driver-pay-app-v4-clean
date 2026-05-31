@@ -1,4 +1,4 @@
-Driver Pay App v4.35 - Weekly Rest Field Priority Fix
+Driver Pay App v4 - Weekly Rest Field Priority Fix
 
 - Weekly Rest primary start now uses local time from the 45h target, so Fri 16:15 + 45h shows 13:15, not 12:15.
 - In Weekly Rest mode, daily 9h/11h suggestion helper is hidden.

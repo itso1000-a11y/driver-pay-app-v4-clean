@@ -1,15 +1,8 @@
-Current build: v4.33
+Current build: v4.36
 
-Included in v4.33:
-- End Week triggers Weekly Rest suggestion mode.
-- Suggested Start field uses the 45h weekly rest start while Weekly Rest mode is active.
-- 24h reduced weekly rest remains a secondary helper option.
-- Daily 9h/11h rest rules remain valid but do not override weekly-rest suggestions after End Week.
-- Rest from previous shift uses weekly-rest colour states in Weekly Rest mode.
-- Version/cache metadata synced to v4.33.
-
-Not changed:
-- Pay calculation logic.
-- Archive calculation logic.
-- Storage keys / PWA identity.
-- Daily input fields.
+- Weekly Rest engine polish: shorter labels and clearer colours.
+- Start field still carries the 45h weekly rest time when Weekly Rest mode is active.
+- Reduced 24h option remains secondary.
+- Start KM suggestion is faded when carried forward and not actually entered.
+- Manual earlier start does not get forced back into Weekly Rest mode.
+- Pay/archive/storage identity unchanged.
