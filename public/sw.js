@@ -1,4 +1,4 @@
-const CACHE_NAME = "driver-pay-v4-cache-v4-37-2";
+const CACHE_NAME = "driver-pay-v4-cache-v4-37-3";
 const APP_SHELL = ["/", "/index.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
