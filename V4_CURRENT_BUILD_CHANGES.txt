@@ -1,3 +1,1 @@
-Current build: v4.37
-
-Hotfix: hide old 9h daily suggestion in weekly-rest scenarios; sync visible app version/cache.
+v4.37.4 - finish placeholder, split/rest wording, daily suggestion helper polish.
