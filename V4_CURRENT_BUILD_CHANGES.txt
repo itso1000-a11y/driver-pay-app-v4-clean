@@ -1,3 +1,6 @@
-Current build: v4.37
+v4.37.5 - light Start suggestion UI polish.
 
-Hotfix: hide old 9h daily suggestion in weekly-rest scenarios; sync visible app version/cache.
+- Restored source hint inside Start field for 11h suggestions.
+- Kept 9h option as helper below Start in normal daily mode.
+- Removed warning icon from helper line.
+- No rest/pay/archive/backup logic changes.
