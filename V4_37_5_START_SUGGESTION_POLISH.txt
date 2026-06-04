@@ -1,0 +1,8 @@
+Driver Pay App v4.37.5
+
+Small UI polish only.
+- Start field shows source hint for 11h auto-suggestion: from 11h rest.
+- 9h option remains below Start field in normal daily mode.
+- Manual Start hides suggestion context through existing manual-start behavior.
+- Helper line no longer shows an exclamation mark for normal options.
+- No calculation, pay, archive, backup, restore, or End Week logic changes.
