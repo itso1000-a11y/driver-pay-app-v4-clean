@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.6";
+const APP_VERSION = "v4.37.7";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";

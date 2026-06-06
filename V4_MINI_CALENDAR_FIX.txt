@@ -1,0 +1,7 @@
+V4 Mini Calendar Fix
+- Removed the saved week status chips from under the date field.
+- Added an in-app mini calendar for selecting week-ending Saturdays.
+- Full/partial colouring is now shown directly on Saturday cells.
+- Only Saturdays are selectable; other days are visible but disabled.
+- Kept the original date input as a fallback/direct picker.
+- Build test passed.

@@ -1,0 +1,18 @@
+Driver Pay App v4.13 UX/workflow update
+
+Included:
+- Week View now opens as compact summary first.
+- Detailed daily view is optional via Detailed view button.
+- Night Out markers appear in weekly daily details.
+- End Week preview shows only used extras/markers instead of empty items.
+- Payslip Net is entered in End Week Preview stage.
+- Start and Finish time fields are arranged side by side.
+- Split Rest visual state is brighter green/yellow blend.
+- Archive/historical view has stronger grey/desaturated visual state and sticky current week return panel.
+- App version is shown in Settings/About area as v4.13.
+
+Not included yet:
+- Full archive edit Save changes flow.
+- Soft-closed week logic.
+- Full Pay Setup/pay modes.
+- Monthly preview.

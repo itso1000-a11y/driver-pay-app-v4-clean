@@ -1,0 +1,16 @@
+Driver Pay App v4.12 - split rest logic fix
+
+Included:
+- Split daily rest no longer counts a 9h overnight rest as a normal reduced rest when Split Rest is marked on the previous day.
+- 4 reduced-rest limit no longer blocks the 9h option when the previous day has Split Rest.
+- Over-13h previous shift now offers 9h as the primary valid start when Split Rest is marked.
+- Split Rest uses a separate green/yellow visual status instead of normal 11h green or reduced-rest warning.
+- Night Out / Split Rest buttons no longer show ON/OFF text; active state is visual/pressed with a checkmark.
+- Build test passed with npm run build.
+
+Not included yet:
+- Full archive edit mode redesign.
+- Soft-closed week logic.
+- Pay Setup expansion.
+- Two-screen day layout.
+- Backup/schema migration redesign.

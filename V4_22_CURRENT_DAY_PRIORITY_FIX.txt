@@ -1,0 +1,15 @@
+Driver Pay App v4.22 - Current-Day Priority Fix
+
+Base: v4.21 startup-state-fix.
+
+Changes:
+- Smart current-day priority: when the active/current week contains today and today is marked Holiday or Off, the app opens today instead of skipping ahead to the first unresolved day after a planned holiday/off block.
+- Incomplete current Work day also opens today.
+- Version metadata updated consistently to v4.22.
+
+Not changed:
+- No bank holiday automation.
+- No pay calculation changes.
+- No rest calculation changes.
+- No archive edit logic changes.
+- No visual/layout/density changes.

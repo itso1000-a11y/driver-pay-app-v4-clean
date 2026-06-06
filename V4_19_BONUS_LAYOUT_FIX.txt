@@ -1,0 +1,9 @@
+Driver Pay App v4.19
+- Version strings/cache updated to v4.19.
+- User-facing dates display as DD-MM-YYYY; internal ISO dates unchanged.
+- Night Out and Split Break are shown side by side.
+- Add Bonus remains list-based; added bonuses display as compact rows with type and editable quantity.
+- Empty bonus placeholder removed.
+- Rest from previous day remains between Shift and Kilometres with a more compact height.
+- KM run stat is slightly more compact.
+- No payroll/rest/archive logic changes.

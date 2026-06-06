@@ -1,0 +1,13 @@
+Driver Pay App V4 - Language update
+
+Added:
+- First launch language selection: English / Bulgarian
+- Language saved in localStorage
+- Language switch inside Settings
+- Translation architecture prepared for future languages
+- Core Day screen, Week view, End Week flow and Settings labels translated
+
+Notes:
+- Current supported languages: English and Bulgarian
+- Future languages can be added by extending the UI_TEXT object in src/App.tsx
+- Build tested successfully with npm run build

@@ -1,0 +1,16 @@
+V4 future week close + archive indicators fix
+
+- Replaced hard End Week lock with a safer Future Week Close flow.
+- If the opened week is empty, End Week now shows options:
+  - All Off
+  - All Holiday
+  - Choose days
+- Choose days allows mixing Holiday and Off day by day.
+- Added Go to current week button in the empty/future week close screen.
+- End Week still protects against accidental repeated silent week skipping.
+- Remaining Off/Holiday only marks empty days; entered work data is not cleared.
+- KM carry-forward remains preserved through Off/Holiday and into the next week.
+- Added visible saved week chips under the Week ending selector:
+  - green = completed/full saved week
+  - yellow = partial saved week
+- Day type change no longer blocks Off/Holiday just because a carried start km exists.

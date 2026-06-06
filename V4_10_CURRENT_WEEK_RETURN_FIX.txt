@@ -1,0 +1,5 @@
+Driver Pay App v4.10 - Current Week Return Fix
+
+- Added clear Go to current week button in historical/archive week warning banner.
+- Historical/archive week is no longer a visual dead end.
+- Build tested with npm run build.

@@ -1,0 +1,17 @@
+Driver Pay App v4.21 - Startup State Fix
+
+Purpose:
+- Prevent fresh/new installs or stale PWA launches from opening directly in archive mode.
+- If the saved active week pointer is historical or closed, startup now falls back to the current payroll week.
+- Legacy day fallback is disabled on startup so old localStorage day data does not override the active/current week.
+
+Scope:
+- Startup/active-week selection only.
+- No pay calculation changes.
+- No rest calculation changes.
+- No archive editing logic changes.
+- No visual redesign.
+
+Important:
+- Existing saved historical weeks remain in localStorage and can still be opened from Week/Archive navigation.
+- The app should start in active/current workflow context by default.

@@ -1,0 +1,12 @@
+Driver Pay App v4.11 - state hardening
+
+Changes:
+- Current Week now loads the active workflow week from driverPayV4_activeSaturday, not blindly the calendar week.
+- Added closed week registry: driverPayV4_closedWeeks.
+- End Week is protected against double close / duplicate archive.
+- Closing a week marks it closed and moves active workflow pointer to next Saturday.
+- Restoring a backup now restores the active week pointer.
+- Closed or historical weeks lock by state, not only by calendar date.
+- Archive warning panel is grey/desaturated instead of amber warning style.
+- Night out and Split rest order swapped: Night out first, Split rest second.
+- package-lock.json intentionally omitted for Vercel npm install stability.

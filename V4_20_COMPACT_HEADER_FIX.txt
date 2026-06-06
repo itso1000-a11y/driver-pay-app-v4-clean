@@ -1,0 +1,8 @@
+v4.20 Compact Header Fix
+
+- Compacted top header vertical padding.
+- Kept day name dominant.
+- Reduced date and week label emphasis slightly.
+- Made top action buttons more compact.
+- No workflow, pay, archive, rest, KM, or bonus logic changed.
+- Updated all visible/version metadata to v4.20.

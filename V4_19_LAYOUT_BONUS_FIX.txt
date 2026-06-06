@@ -1,0 +1,15 @@
+Driver Pay App v4.19
+
+Focused layout/version fix from v4.18:
+- App version updated consistently to v4.19.
+- User-facing dates now use DD-MM-YYYY display while internal ISO storage remains unchanged.
+- Week ending selector displays DD-MM-YYYY.
+- Day Type row keeps icons.
+- Rest from previous day remains below Shift and above Kilometres.
+- KM run block made more compact.
+- Night out and Split break are shown side by side.
+- Add bonus remains a compact dark action button.
+- Bonus rows are hidden when empty; when added they show as compact type + quantity cards.
+- Bonus quantity defaults to x1 and remains editable.
+
+No changes intended to pay/rest/archive calculation logic.

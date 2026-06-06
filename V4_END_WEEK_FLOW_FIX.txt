@@ -1,0 +1,4 @@
+V4 End Week flow fix
+- Confirm & Close Week now closes the week and immediately exits the preview modal.
+- After confirmation the app opens the new week/day instead of leaving the preview overlay on screen.
+- Remaining Off / Remaining Holiday actions also close the modal immediately after closing the week.

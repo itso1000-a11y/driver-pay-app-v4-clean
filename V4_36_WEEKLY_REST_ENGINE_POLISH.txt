@@ -1,0 +1,10 @@
+v4.36 Weekly Rest Engine Polish
+
+- Keeps payroll week separate from weekly-rest logic direction.
+- Weekly Rest text is shorter and more human.
+- 45h+ shows green; 24h-45h shows yellow; missing/required weekly rest uses red.
+- Weekly Rest suggestion still uses the Start field for the 45h time.
+- Reduced option stays as secondary helper text.
+- If the user manually starts earlier than the 45h suggestion, the app does not force weekly-rest mode; it falls back to normal daily workflow.
+- Start KM carried from the previous finish is shown as suggested/faded when it is not real entered data.
+- No pay logic or archive rewrite changes.

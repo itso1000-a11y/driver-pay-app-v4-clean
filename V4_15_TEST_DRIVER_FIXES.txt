@@ -1,0 +1,13 @@
+Driver Pay App v4.15 - test driver build
+
+Included:
+- App/package version updated to 4.15.0.
+- Backup now includes closedWeeks state.
+- Restore restores closedWeeks when present.
+- Stronger archive visual state with watermark.
+- More visible archive/current-week controls.
+- Calendar Saturday markers strengthened for full/partial/empty/archive states.
+- Bulgarian text cleanup for key warnings, install guidance, settings, backup/restore, week view and end week flow.
+- Week view labels use translated strings for rest snapshot and detailed view.
+- Used extras/markers format simplified (ADR 1, Night Out 2, Split Rest 1).
+- PWA cache name bumped to reduce stale installed-app cache issues.

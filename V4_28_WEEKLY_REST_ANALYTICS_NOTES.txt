@@ -1,0 +1,17 @@
+Driver Pay App v4.28
+
+Scope:
+- First practical Weekly Rest UX layer using existing Start/Finish suggestion and Rest from previous shift areas.
+- Rest label changed from previous day to previous shift.
+- Weekly rest suggestions show 45h full option and 24h reduced option with owed-later hint.
+- Rest card can show reduced/full weekly rest context when rest from previous shift reaches weekly thresholds.
+- Vercel Analytics and Speed Insights script tags added.
+- Metadata author/app-owner added.
+- Version updated to v4.28.
+- package-lock.json removed to avoid stale/internal registry lock issues in Vercel deploys.
+
+Protected:
+- Pay calculation logic unchanged.
+- Archive logic unchanged.
+- Daily input fields unchanged.
+- Storage keys/domain identity unchanged, so local data should survive update.
