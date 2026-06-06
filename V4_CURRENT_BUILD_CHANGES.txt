@@ -1,6 +1,0 @@
-v4.37.5 - light Start suggestion UI polish.
-
-- Restored source hint inside Start field for 11h suggestions.
-- Kept 9h option as helper below Start in normal daily mode.
-- Removed warning icon from helper line.
-- No rest/pay/archive/backup logic changes.

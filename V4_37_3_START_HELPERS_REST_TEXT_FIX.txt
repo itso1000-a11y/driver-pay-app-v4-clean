@@ -1,6 +1,0 @@
-v4.37.3
-- Restore Start time helper text for daily rest suggestions.
-- Keep daily helper hidden in Weekly Rest mode.
-- Remove duplicate Rest card footer/status text.
-- Add 74h cap for active weekly rest suggestions.
-- Version/cache synced to v4.37.3.

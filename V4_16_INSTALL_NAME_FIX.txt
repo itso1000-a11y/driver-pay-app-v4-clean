@@ -1,7 +1,0 @@
-Driver Pay App v4.18 - Install name fix
-
-- Updated PWA manifest name to Driver Pay App v4.18.
-- Updated short_name to Driver Pay v4.18.
-- Updated PWA description from v4.15 to v4.18 payroll update.
-- Updated service worker cache name from v4-15 to v4-16 to force cache refresh.
-- Updated index title / Apple mobile app title to v4.18.

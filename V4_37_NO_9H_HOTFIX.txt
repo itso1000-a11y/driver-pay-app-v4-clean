@@ -1,3 +1,0 @@
-v4.37 Hotfix
-- Removed the old 9h helper from weekly-rest scenarios.
-- Version/cache synced to v4.37.
