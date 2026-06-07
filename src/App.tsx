@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.11";
+const APP_VERSION = "v4.37.12";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -1232,7 +1232,10 @@ export default function App() {
     setInstallPrompt(null);
   }
   function updateCurrentDay<K extends keyof DayRecord>(key: K, value: DayRecord[K]) { if (weekLocked) return; setDays((prev) => prev.map((day, index) => (index === currentIndex ? { ...day, [key]: value } : day))); }
-  function updateTimeValue(field: "start" | "finish", rawValue: string) { updateCurrentDay(field, formatTimeInput(rawValue)); }
+  function updateTimeValue(field: "start" | "finish", rawValue: string) {
+    if (rawValue === "") { updateCurrentDay(field, ""); return; }
+    updateCurrentDay(field, formatTimeInput(rawValue));
+  }
   function normalizeTimeValue(field: "start" | "finish") { updateCurrentDay(field, normalizeTime(currentDay[field] || "")); }
   function updateKmValue(field: "startKm" | "finishKm", rawValue: string) { updateCurrentDay(field, digitsOnly(rawValue)); }
   function removeBonus(id: string) { updateCurrentDay("bonuses", currentDay.bonuses.filter((bonus) => bonus.id !== id)); }
