@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.10";
+const APP_VERSION = "v4.37.11";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -1402,10 +1402,34 @@ export default function App() {
   const weekDifference = payslipActualWeek ? parseDecimal(payslipActualWeek) - weekTotals.net : 0;
   const weekBonusSummary = useMemo(() => taxedWeek.reduce((acc, day) => { for (const bonus of day.bonuses) acc[bonus.type] = (acc[bonus.type] || 0) + bonus.qty; if (day.nightOut) acc.nightOuts = (acc.nightOuts || 0) + 1; return acc; }, { nightOuts: 0 } as Record<BonusType | "nightOuts", number>), [taxedWeek]);
 
+  function saveClosedWeekCorrection(type: WeekArchiveType) {
+    const closingSaturday = getSaturdayDay(days).dateISO;
+    saveWeekData(days, settings, payslipActualWeek);
+    setArchive((prev) => {
+      const existingIndex = prev.findIndex((item) => Array.isArray(item?.days) && getSaturdayDay(item.days).dateISO === closingSaturday);
+      const existing = existingIndex >= 0 ? prev[existingIndex] : null;
+      const updatedItem = {
+        ...(existing || {}),
+        id: existing?.id ?? Date.now(),
+        label: existing?.label || weekEndingLabel,
+        createdAt: existing?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        days,
+        settings,
+        totals: weekTotals,
+        payslip: payslipActualWeek,
+        type: existing?.type || type,
+      };
+      if (existingIndex < 0) return [updatedItem, ...prev];
+      return prev.map((item, index) => index === existingIndex ? updatedItem : item);
+    });
+    setSavedWeekIndicators(getSavedWeekIndicators());
+  }
+
   function endWeek(type: WeekArchiveType, dayTypeOverrides?: Record<string, DayType>) {
     const closingSaturday = getSaturdayDay(days).dateISO;
     if (isWeekClosed(closingSaturday)) {
-      window.alert("Week already closed.");
+      saveClosedWeekCorrection(type);
       return;
     }
     const requestedType: DayType = type === "holiday" ? "holiday" : "off";
