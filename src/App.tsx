@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.13";
+const APP_VERSION = "v4.37.14";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -588,11 +588,26 @@ function getLastCompletedWorkShiftBeforeIndex(days: DayRecord[], index: number, 
   return null;
 }
 
+function getRestDisplayEndAbs(current: DayRecord): number | null {
+  if (current.dayType !== "work") return null;
+  const startAbs = getDayTimeAbsMinutes(current, current.start);
+  if (startAbs != null) return startAbs;
+
+  // Before Start is entered, the Rest card should still show the live factual rest
+  // from the previous real Finish to now. For past days, cap at the end of that day;
+  // for future days, do not invent a rest value.
+  const dayStartAbs = getDayStartAbsMinutes(current);
+  const dayEndAbs = dayStartAbs + 24 * 60;
+  const nowAbs = Math.floor(Date.now() / 60000);
+  if (nowAbs < dayStartAbs) return null;
+  return Math.min(nowAbs, dayEndAbs);
+}
+
 function getRestFromPreviousShiftMinutes(anchor: PreviousShiftAnchor | null, current: DayRecord): number | null {
   if (!anchor || current.dayType !== "work") return null;
-  const startAbs = getDayTimeAbsMinutes(current, current.start);
-  if (startAbs == null) return null;
-  return Math.max(0, startAbs - anchor.finishAbs);
+  const endAbs = getRestDisplayEndAbs(current);
+  if (endAbs == null) return null;
+  return Math.max(0, endAbs - anchor.finishAbs);
 }
 
 function getLastCompletedWorkShiftInWeek(days: DayRecord[]): PreviousShiftAnchor | null {
@@ -659,8 +674,8 @@ function getWeeklyRestSuggestionHelp(anchor: { finishAbs: number } | null, curre
   if (!enabled || !anchor || current.dayType !== "work") return "";
   const targets = getWeeklyRestTargets(anchor);
   if (!targets) return "";
-  const currentDayStartAbs = getDayStartAbsMinutes(current);
-  if (currentDayStartAbs > anchor.finishAbs + 72 * 60) return "";
+  const helperEndAbs = getRestDisplayEndAbs(current) ?? getDayStartAbsMinutes(current);
+  if (helperEndAbs > anchor.finishAbs + 72 * 60) return "";
   // Weekly rest is helper information only. It must never fill the Start field.
   return `${t("weeklyRest45Option")}: ${formatShortDayTime(targets.fullStart)} · ${t("weeklyRest24Option")}: ${formatShortDayTime(targets.reducedStart)} (+${targets.reducedOwedHours}h ${t("owedLater")})`;
 }
