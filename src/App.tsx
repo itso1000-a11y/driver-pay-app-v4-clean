@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.14";
+const APP_VERSION = "v4.37.15";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -552,10 +552,11 @@ function getLastCompletedWorkShiftBeforeIndex(days: DayRecord[], index: number, 
     const day = days[ordered[i]];
     if (day?.dayType !== "work") continue;
     if (!day.finish) {
-      // Do not carry an older finish through an unfinished work day.
-      // Start suggestions belong to the immediate work chain only;
-      // Off/Holiday can be skipped, but an unfinished Work day stops the chain.
-      return null;
+      // A completely untouched past Work day is only a soft missed/no-activity day.
+      // It must not break the chronological rest chain.
+      // But a touched Work day without Finish is a real incomplete day and must stop lookup.
+      if (dayHasEnteredData(day)) return null;
+      continue;
     }
     const finishAbs = getDayTimeAbsMinutes(day, day.finish);
     if (finishAbs != null) return { day, finishAbs };
