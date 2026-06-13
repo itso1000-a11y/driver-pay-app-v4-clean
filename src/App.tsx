@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.19";
+const APP_VERSION = "v4.37.20";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -1406,8 +1406,9 @@ export default function App() {
   const reducedCount = getWeeklyReducedRestCountBeforeIndex(days, currentIndex);
   const effectiveRestStatus = getEffectiveRestStatus(restBeforeMinutes, previousWorked, Boolean(previousShiftAnchor?.day.splitBreak || previousDay?.splitBreak), reducedCount);
   const restBeforeColorsRaw = getRestCardPalette(restBeforeMinutes, effectiveRestStatus, reducedCount);
+  const currentRestNeutralColors = { bg: "#f8fafc", border: "#e2e8f0", text: "#475569", label: t("currentRest") };
   const restBeforeColors = !currentDay.start && restBeforeMinutes != null
-    ? { ...restBeforeColorsRaw, label: t("currentRest") }
+    ? currentRestNeutralColors
     : restBeforeColorsRaw;
   const suggestedTimes = getSuggestedStartTimesForDay(previousShiftAnchor, currentDay, reducedCount, previousWorked, Boolean(previousShiftAnchor?.day.splitBreak || previousDay?.splitBreak));
   const dailyPrimarySuggestedStart = getPrimarySuggestedStart(suggestedTimes);
@@ -1441,8 +1442,8 @@ export default function App() {
   const dailySuggestionHelp = dailyStartIsManual ? "" : getSuggestedStartHelp(suggestedTimes);
   const startFieldHint = (!displayStartValue && dailyPrimarySuggestedStart && suggestedTimes.h11 != null) ? t("from11hRest") : "";
   const weeklyRestPalette = weeklyRestCandidateActive ? getWeeklyRestPalette(restBeforeMinutes, weeklyRestRequiredMinutes) : null;
-  const activeRestColors = weeklyRestPalette || restBeforeColors;
-  const restContextHelp = weeklyRestCandidateActive ? getWeeklyRestContextHelp(restBeforeMinutes, weeklyRestRequiredMinutes) : getRestContextHelp(restBeforeMinutes);
+  const activeRestColors = !currentDay.start && restBeforeMinutes != null ? currentRestNeutralColors : (weeklyRestPalette || restBeforeColors);
+  const restContextHelp = !currentDay.start ? "" : (weeklyRestCandidateActive ? getWeeklyRestContextHelp(restBeforeMinutes, weeklyRestRequiredMinutes) : getRestContextHelp(restBeforeMinutes));
   const activeBonusTypes = useMemo(() => getActiveBonusTypes(settings), [settings]);
   const previewWeek = useMemo(() => [...taxedWeek].sort((a, b) => DAY_ORDER.indexOf(a.id) - DAY_ORDER.indexOf(b.id)), [taxedWeek]);
   const weekTotals = taxedWeek.reduce<WeekTotals>((acc, day) => { acc.worked += day.workedMinutes || 0; acc.overtime += day.overtimeMinutes || 0; acc.km += day.kmRun || 0; acc.taxable += day.taxablePay || 0; acc.untaxed += day.untaxedPay || 0; acc.tax += day.tax || 0; acc.ni += day.ni || 0; acc.net += day.net || 0; acc.total += day.total || 0; return acc; }, { ...emptyTotals });
