@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.20";
+const APP_VERSION = "v4.37.21";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -15,12 +15,12 @@ const UI_TEXT: Record<Lang, Record<string, string>> = {
     weekEndingSaturday: "Week ending Saturday", loadSelected: "Load selected", currentWeek: "Current week", previous: "Prev", next: "Next",
     dayType: "Day type", workDay: "Work day", holidayDay: "Holiday day", offDay: "Day Off", shift: "Shift", weekend: "Weekend", start: "Start", finish: "Finish", worked: "Worked", ot: "OT",
     kilometres: "Kilometres", suggested: "suggested", startKm: "Start km", finishKm: "Finish km", kmRun: "KM run", startKmManual: "Start km can be corrected manually.", startKmSuggested: "Grey start km is suggested from {source}. Type over it if it is wrong.", fromFinishKm: "from {source} finish km", lastSavedDay: "last saved day", lastWeek: "last week",
-    restFromPreviousDay: "Rest from previous shift", noPreviousDay: "No previous shift found.", holidayPay: "Holiday pay", taxed: "taxed", splitBreak: "Split break", weekActive: "Week active", nightOut: "Night out", bonuses: "Bonuses", addBonus: "Add bonus", add: "Add", noBonusesAdded: "No bonuses added.", saveNext: "Save & Next", weekView: "Week View",
+    restFromPreviousDay: "Rest from previous shift", noPreviousDay: "No previous shift found.", currentRest: "Current rest", holidayPay: "Holiday pay", taxed: "taxed", splitBreak: "Split break", weekActive: "Week active", nightOut: "Night out", bonuses: "Bonuses", addBonus: "Add bonus", add: "Add", noBonusesAdded: "No bonuses added.", saveNext: "Save & Next", weekView: "Week View",
     daySummary: "Day summary", hours: "Hours", overtime: "Overtime", km: "KM", yes: "Yes", no: "No", delete: "Delete",
     settingsTitle: "Settings", backupRestore: "Backup / Restore", recommended: "recommended", backupInfo: "Save a copy of all weeks, current entries, settings, archive, and payslip comparison. Restore it if Edge data is cleared or you move to another computer.", backup: "Backup", restore: "Restore", payRates: "Pay rates", companyName: "Company name (optional)", weekdayPayRate: "Weekday pay rate", saturdayPayRate: "Saturday pay rate", sundayPayRate: "Sunday pay rate", pensionMode: "Pension mode", noPension: "No pension", manualPension: "Manual pension", pensionDeduction: "Pension deduction", overtimeThreshold: "Overtime threshold (hours)", overtimePayRate: "Overtime pay rate", foodAllowance: "Food allowance per worked day", nightOutPay: "Night out pay", bonusPayRates: "Bonus pay rates", customBonuses: "Custom bonuses", customBonusName: "Bonus name", customBonusRate: "Rate", done: "Done",
     weekPreview: "Week Preview", close: "Close", estimatedNet: "Estimated Net", payslipNet: "Payslip Net", difference: "Difference", days: "Days", noPoundsHere: "no £ here", holiday: "Holiday", off: "Off", showBreakdown: "Show breakdown", hideBreakdown: "Hide breakdown", basePay: "Base pay", food: "Food", tax: "Tax", ni: "NI", net: "Net", splitRests: "Split rests", back: "Back", endWeek: "End Week",
     endWeekPreview: "End Week Preview", totalHours: "Total hours", reducedRests: "Reduced rests", confirmInfo: "Confirming will close this week, save an automatic backup, and open the next week. Choose how to mark the remaining days.", confirmCloseWeek: "Confirm & Close Week", remainingOff: "Remaining Off", remainingHoliday: "Remaining Holiday",
-    from11hRest: "from 11h rest", nineHourOption: "9h option", reducedLimitReached: "No reduced rests left", reducedLeft: "Left", noReducedLeft: "No reduced rests left", splitRestNotCounted: "", incompleteShift: "Incomplete shift.", finishBeforeStart: "Finish time is before start.", longShift: "Long shift", shiftLimitExceeded: "15h limit exceeded", rest11: "Daily rest", rest9: "Reduced rest", currentRest: "Current rest", previousShiftTooLongFor11h: "11h rest unavailable", weeklyRest45Option: "Weekly rest", weeklyRest24Option: "Reduced", owedLater: "later", toFullWeeklyRest: "left", weeklyRestComplete: "Weekly rest", reducedWeeklyRest: "Reduced weekly rest", compensationMissing: "Hours missing", weeklyRestRequired: "Weekly rest needed", dailyRestCompleted: "", violation: "Rest violation", pending: "No start yet", backupRestored: "Backup restored successfully.", backupFailed: "This backup file could not be restored.", installHelp: "Use your browser menu and choose Install app / Add to Home screen.", futureWeekClose: "Close empty week", fastCloseHint: "This week has no work data. Mark the days and close it without filling day by day.", allOff: "All Off", allHoliday: "All Holiday", chooseDays: "Choose days", closeFutureWeek: "Close this week", goToCurrentWeek: "Go to current week", savedWeeks: "Saved weeks", noSavedWeeks: "No saved weeks yet", fullWeek: "full", partialWeek: "partial", selectSaturday: "Select Saturday", savedFull: "Saved full", savedPartial: "Saved partial", emptyWeek: "Empty", restSnapshot: "Rest snapshot", usedExtras: "Used extras / markers", detailedView: "Detailed view", hideDailyDetails: "Hide daily details", archiveWatermark: "ARCHIVE", editingArchive: "Archive edit mode"
+    from11hRest: "from 11h rest", nineHourOption: "9h option", reducedLimitReached: "No reduced rests left", reducedLeft: "Left", noReducedLeft: "No reduced rests left", splitRestNotCounted: "", incompleteShift: "Incomplete shift.", finishBeforeStart: "Finish time is before start.", longShift: "Long shift", shiftLimitExceeded: "15h limit exceeded", rest11: "Daily rest", rest9: "Reduced rest", previousShiftTooLongFor11h: "11h rest unavailable", weeklyRest45Option: "Weekly rest", weeklyRest24Option: "Reduced", owedLater: "later", toFullWeeklyRest: "left", weeklyRestComplete: "Weekly rest", reducedWeeklyRest: "Reduced weekly rest", compensationMissing: "Hours missing", weeklyRestRequired: "Weekly rest needed", dailyRestCompleted: "", violation: "Rest violation", pending: "No start yet", backupRestored: "Backup restored successfully.", backupFailed: "This backup file could not be restored.", installHelp: "Use your browser menu and choose Install app / Add to Home screen.", futureWeekClose: "Close empty week", fastCloseHint: "This week has no work data. Mark the days and close it without filling day by day.", allOff: "All Off", allHoliday: "All Holiday", chooseDays: "Choose days", closeFutureWeek: "Close this week", goToCurrentWeek: "Go to current week", savedWeeks: "Saved weeks", noSavedWeeks: "No saved weeks yet", fullWeek: "full", partialWeek: "partial", selectSaturday: "Select Saturday", savedFull: "Saved full", savedPartial: "Saved partial", emptyWeek: "Empty", restSnapshot: "Rest snapshot", usedExtras: "Used extras / markers", detailedView: "Detailed view", hideDailyDetails: "Hide daily details", archiveWatermark: "ARCHIVE", editingArchive: "Archive edit mode"
   },
   bg: {
     chooseLanguage: "Избери език", appTitle: "Driver Pay App V4", currentDay: "Текущ ден", install: "Инсталирай", week: "Седмица", settings: "Настройки", language: "Език",
@@ -1405,8 +1405,7 @@ export default function App() {
   const previousWorked = previousShiftAnchor ? getWorkedMinutes(previousShiftAnchor.day) : (previousDay ? getWorkedMinutes(previousDay) : null);
   const reducedCount = getWeeklyReducedRestCountBeforeIndex(days, currentIndex);
   const effectiveRestStatus = getEffectiveRestStatus(restBeforeMinutes, previousWorked, Boolean(previousShiftAnchor?.day.splitBreak || previousDay?.splitBreak), reducedCount);
-  const restBeforeColorsRaw = getRestCardPalette(restBeforeMinutes, effectiveRestStatus, reducedCount);
-  const currentRestNeutralColors = { bg: "#f8fafc", border: "#e2e8f0", text: "#475569", label: t("currentRest") };
+  const restBeforeColors = getRestCardPalette(restBeforeMinutes, effectiveRestStatus, reducedCount);
   const suggestedTimes = getSuggestedStartTimesForDay(previousShiftAnchor, currentDay, reducedCount, previousWorked, Boolean(previousShiftAnchor?.day.splitBreak || previousDay?.splitBreak));
   const dailyPrimarySuggestedStart = getPrimarySuggestedStart(suggestedTimes);
   const weeklyRestCandidate = getWeeklyRestCandidateForSelectedWeek(selectedSaturday);
@@ -1434,15 +1433,15 @@ export default function App() {
   const weeklyRestSuggestionHelpRaw = getWeeklyRestSuggestionHelp(weeklyRestCandidate ? { finishAbs: weeklyRestCandidate.finishAbs } : null, currentDay, weeklyRestCandidateActive);
   const autoAcceptedDailyDraft = Boolean(currentDay.start && dailyPrimarySuggestedStart && currentDay.start === dailyPrimarySuggestedStart && !currentDay.finish && !dayHasDestructiveWorkData(currentDay));
   const displayStartValue = autoAcceptedDailyDraft ? "" : (currentDay.start || "");
-  const restBeforeColors = !displayStartValue && restBeforeMinutes != null
-    ? currentRestNeutralColors
-    : restBeforeColorsRaw;
   const dailyStartIsManual = Boolean(displayStartValue && dailyPrimarySuggestedStart && displayStartValue !== dailyPrimarySuggestedStart);
   const weeklyRestSuggestionHelp = weeklyRestSuggestionHelpRaw;
   const dailySuggestionHelp = dailyStartIsManual ? "" : getSuggestedStartHelp(suggestedTimes);
   const startFieldHint = (!displayStartValue && dailyPrimarySuggestedStart && suggestedTimes.h11 != null) ? t("from11hRest") : "";
   const weeklyRestPalette = weeklyRestCandidateActive ? getWeeklyRestPalette(restBeforeMinutes, weeklyRestRequiredMinutes) : null;
-  const activeRestColors = !displayStartValue && restBeforeMinutes != null ? currentRestNeutralColors : (weeklyRestPalette || restBeforeColors);
+  // Before a real visible Start is entered, the rest card is factual information only.
+  // Do not show reduced/daily/weekly warning colours for a suggested or empty Start.
+  const currentRestPalette = { ...statusPalette("unknown"), label: t("currentRest") };
+  const activeRestColors = !displayStartValue ? currentRestPalette : (weeklyRestPalette || restBeforeColors);
   const restContextHelp = !displayStartValue ? "" : (weeklyRestCandidateActive ? getWeeklyRestContextHelp(restBeforeMinutes, weeklyRestRequiredMinutes) : getRestContextHelp(restBeforeMinutes));
   const activeBonusTypes = useMemo(() => getActiveBonusTypes(settings), [settings]);
   const previewWeek = useMemo(() => [...taxedWeek].sort((a, b) => DAY_ORDER.indexOf(a.id) - DAY_ORDER.indexOf(b.id)), [taxedWeek]);
