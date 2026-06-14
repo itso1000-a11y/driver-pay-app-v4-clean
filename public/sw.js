@@ -1,4 +1,4 @@
-const CACHE_NAME = "driver-pay-v4-cache-v4-37-29-restore-compact-ui";
+const CACHE_NAME = "driver-pay-v4-cache-v4-37-30-compact-density";
 const APP_SHELL = ["/", "/index.html", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
