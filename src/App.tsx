@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.33";
+const APP_VERSION = "v4.37.34";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -597,14 +597,15 @@ function getRestDisplayEndAbs(current: DayRecord): number | null {
   const startAbs = getDayTimeAbsMinutes(current, current.start);
   if (startAbs != null) return startAbs;
 
-  // Before Start is entered, the Rest card should still show the live factual rest
-  // from the previous real Finish to now. For past days, cap at the end of that day;
-  // for future days, do not invent a rest value.
+  // Before Start is entered, the Rest card is a live factual counter:
+  // previous real Finish -> now. This must still show when the selected workday
+  // is tomorrow/future (for example Sunday evening looking at Monday).
+  // Only past days are capped at the end of that day.
   const dayStartAbs = getDayStartAbsMinutes(current);
   const dayEndAbs = dayStartAbs + 24 * 60;
   const nowAbs = Math.floor(Date.now() / 60000);
-  if (nowAbs < dayStartAbs) return null;
-  return Math.min(nowAbs, dayEndAbs);
+  if (nowAbs >= dayEndAbs) return dayEndAbs;
+  return nowAbs;
 }
 
 function getRestFromPreviousShiftMinutes(anchor: PreviousShiftAnchor | null, current: DayRecord): number | null {
