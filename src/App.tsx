@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 
 type Lang = "en" | "bg";
-const APP_VERSION = "v4.37.32";
+const APP_VERSION = "v4.37.33";
 const LANGUAGE_STORAGE_KEY = "driverPayV4_language";
 const ACTIVE_WEEK_STORAGE_KEY = "driverPayV4_activeSaturday";
 const CLOSED_WEEKS_STORAGE_KEY = "driverPayV4_closedWeeks";
@@ -627,39 +627,22 @@ function getLastCompletedWorkShiftInWeek(days: DayRecord[]): PreviousShiftAnchor
 }
 
 function readWeeklyRestCandidate(): WeeklyRestCandidate | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const parsed = JSON.parse(localStorage.getItem(WEEKLY_REST_CANDIDATE_STORAGE_KEY) || "null");
-    if (!parsed || typeof parsed.closingSaturdayISO !== "string" || typeof parsed.finishAbs !== "number") return null;
-    return parsed;
-  } catch {
-    return null;
-  }
+  // Stable v4.37.33 recovery rule:
+  // Weekly Rest bridge/candidate is disabled. It was an experimental helper
+  // and must not affect Start suggestions or the Rest card in the golden base.
+  return null;
 }
 
 function writeWeeklyRestCandidate(candidate: WeeklyRestCandidate | null) {
+  // Keep cleanup only. Do not persist a weekly-rest bridge in this stable base.
   if (typeof window === "undefined") return;
-  if (!candidate) localStorage.removeItem(WEEKLY_REST_CANDIDATE_STORAGE_KEY);
-  else localStorage.setItem(WEEKLY_REST_CANDIDATE_STORAGE_KEY, JSON.stringify(candidate));
+  localStorage.removeItem(WEEKLY_REST_CANDIDATE_STORAGE_KEY);
 }
 
 function getWeeklyRestCandidateForSelectedWeek(selectedSaturdayISO: string): WeeklyRestCandidate | null {
-  const stored = readWeeklyRestCandidate();
-  if (stored && selectedSaturdayISO > stored.closingSaturdayISO) return stored;
-
-  // Backfill/derive the candidate for users who closed the previous week
-  // before the Weekly Rest feature existed, or when the active pointer moved
-  // to the next soft/current week. This is a computed overlay only: it does
-  // not rewrite old archive data.
-  try {
-    const previousSaturdayISO = toISODate(addDays(fromISODate(selectedSaturdayISO), -7));
-    if (!isWeekClosed(previousSaturdayISO)) return null;
-    const previousWeek = loadSavedWeekDataOrBlank(previousSaturdayISO);
-    const anchor = getLastCompletedWorkShiftInWeek(previousWeek.days);
-    return anchor ? { closingSaturdayISO: previousSaturdayISO, finishAbs: anchor.finishAbs } : null;
-  } catch {
-    return null;
-  }
+  // Weekly Rest will be planned as a separate module later.
+  // No backfill/bridge overlay is allowed in this stable base.
+  return null;
 }
 
 function getWeeklyRestTargets(anchor: { finishAbs: number } | null) {
@@ -1495,8 +1478,8 @@ export default function App() {
         return markEmptyDay(d, selectedType);
       });
     const finalDays = carryKmThroughNonWorkingDays(markedDays);
-    const weeklyRestAnchor = getLastCompletedWorkShiftInWeek(finalDays);
-    writeWeeklyRestCandidate(weeklyRestAnchor ? { closingSaturdayISO: closingSaturday, finishAbs: weeklyRestAnchor.finishAbs } : null);
+    // Clear any old experimental Weekly Rest bridge state. Do not create one here.
+    writeWeeklyRestCandidate(null);
     const carryKm = findLastKnownKm(finalDays);
     saveWeekData(finalDays, settings, payslipActualWeek);
     markWeekClosed(closingSaturday);
